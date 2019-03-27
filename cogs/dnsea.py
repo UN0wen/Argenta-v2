@@ -1,12 +1,9 @@
 from discord.ext import commands
+from cogs.utils import checks
 import datetime
 
 TH_id = 265816069556404224
 PT_id = 268739104999473155
-
-
-def check_channel(ctx):
-    return ctx.channel.id == PT_id or ctx.channel.id == TH_id
 
 
 class DNSEA(commands.Cog):
@@ -25,7 +22,7 @@ class DNSEA(commands.Cog):
             await ctx.send(f'Incorrect cleanth subcommand passed.')
 
     @clean.command()
-    @commands.check(check_channel)
+    @checks.is_in_channel(TH_id, PT_id)
     async def verify(self, ctx):
         if ctx.channel.id == TH_id:
             delete_time = self.TH_delete_time
@@ -44,7 +41,7 @@ class DNSEA(commands.Cog):
             Last message is: <{deleted[-1].jump_url}>.""")
 
     @clean.command()
-    @commands.check(check_channel)
+    @checks.is_in_channel(TH_id, PT_id)
     async def delete(self, ctx):
         if ctx.channel.id == TH_id:
             delete_time = self.TH_delete_time

@@ -50,7 +50,7 @@ class Argenta(commands.Bot):
         elif isinstance(error, commands.DisabledCommand):
             await ctx.author.send('Sorry. This command is disabled and cannot be used.')
         elif isinstance(error, commands.CheckFailure):
-            await ctx.send("Sorry, this command is limited to a specific channel that is not this one.")
+            await ctx.send("Sorry, you don't have the necessary permissions to use the command.")
         elif isinstance(error, commands.CommandInvokeError):
             original = error.original
             if not isinstance(original, discord.HTTPException):
