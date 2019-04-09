@@ -64,7 +64,7 @@ class Argenta(commands.Bot):
         if not hasattr(self, 'uptime'):
             self.uptime = datetime.datetime.utcnow()
 
-        await self.change_presence(status=discord.Status.invisible, activity=discord.Game(name="with Argenta."))
+        await self.change_presence(status=discord.Status.online, activity=discord.Game(name="with Argenta."))
         print(f'Ready: {self.user} (ID: {self.user.id})')
 
     async def on_message(self, message):
