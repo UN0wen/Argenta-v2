@@ -2,9 +2,13 @@ from discord.ext import commands
 from cogs.utils import checks
 import random
 import datetime
+import asyncio
+import logging
 
 TH_id = 265816069556404224
 PT_id = 268739104999473155
+
+log = logging.getLogger(__name__)
 
 
 class DNSEA(commands.Cog):
@@ -101,9 +105,11 @@ class DNSEA(commands.Cog):
         author_names = []
         author_names_total = []
         for author in self.snap_list:
-            author_names.append(author.name)
+            if author:
+                author_names.append(author.name)
         for author in self.survivor_list:
-            author_names_total.append(author.name)
+            if author:
+                author_names_total.append(author.name)
         await ctx.send(f'List of people to snap: {author_names}')
         await ctx.send(f'Total number of unique posters in this channel: {self.snap_total}')
         await ctx.send(f'List of people who survived: {author_names_total}')
@@ -112,7 +118,7 @@ class DNSEA(commands.Cog):
     @checks.is_admin()
     @commands.is_owner()
     async def kill(self, ctx):
-    	if not self.snap_list:
+        if not self.snap_list:
             await ctx.send(f'Run {ctx.prefix}snap check to populate list of people to be snapped.')
         else:
             fallen = ctx.guild.get_role(563349066088710144)
@@ -123,13 +129,21 @@ class DNSEA(commands.Cog):
             survive_msg = "You have had the great privilege of being saved by the great titan."
 
             for member in self.snap_list:
-                await member.add_roles(fallen, endgame)
-                await member.remove_roles(citizen)
-                await member.send(dust_msg)
+                if member is not None:
+                    if fallen not in member.roles:
+                        await member.add_roles(fallen, endgame)
+                        await member.remove_roles(citizen)
+                        await member.send(dust_msg)
+                        log.info(f"Snapped {member.name}.")
+                        await asyncio.sleep(3)
 
             for member in self.survivor_list:
-                await member.add_roles(avenger, endgame)
-                await member.send(survive_msg)
+                if member is not None:
+                    if avenger not in member.roles:
+                        await member.add_roles(avenger, endgame)
+                        await member.send(survive_msg)
+                        log.info(f"Awarded {member.name}.")
+                        await asyncio.sleep(3)
 
     @snap.command()
     @checks.is_admin()
@@ -144,22 +158,38 @@ class DNSEA(commands.Cog):
             if fallen in member_roles:
                 await member.remove_roles(fallen)
                 await member.add_roles(citizen)
+                log.info(f"Saved {member.name}.")
+                await asyncio.sleep(3)
 
             elif avenger in member_roles:
                 await member.remove_roles(avenger)
                 await member.add_roles(citizen)
+                log.info(f"Saved {member.name}.")
+                await asyncio.sleep(3)
 
     @snap.command()
     @commands.is_owner()
     async def cleanup(self, ctx):
-	if not self.snap_list:
-	    for mem_nm in self.snap_member_names: 
-	        mem = ctx.guild.get_member_named(mem_nm)
-		self.snap_list.append(mem)
-	    for mem_nm in self.snap_survivor_names:
+        if not self.snap_list:
+            for mem_nm in self.snap_member_names:
                 mem = ctx.guild.get_member_named(mem_nm)
-		self.survivor_list.append(mem)
-	    await ctx.send("Loaded snap list.")
+                self.snap_list.append(mem)
+            for mem_nm in self.snap_survivor_names:
+                mem = ctx.guild.get_member_named(mem_nm)
+                self.survivor_list.append(mem)
+            await ctx.send("Loaded snap list.")
+
+    @commands.command()
+    @checks.is_in_channel(563348844075810836)
+    async def free(self, ctx):
+        fallen = ctx.guild.get_role(563349066088710144)
+        citizen = ctx.guild.get_role(264072124069707798)
+        coward = ctx.guild.get_role(563371239276806165)
+        if fallen in ctx.author.roles:
+            await ctx.author.remove_roles(fallen)
+            await ctx.author.add_roles(coward, citizen)
+            await ctx.send(f"{ctx.author.name} has fled. Pathetic.")
+
 
 def setup(bot):
     bot.add_cog(DNSEA(bot))
