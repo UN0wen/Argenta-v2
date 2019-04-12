@@ -32,7 +32,7 @@ class Argenta(commands.Bot):
         super().__init__(command_prefix=config.BOT_PREFIX, description=description,
                          pm_help=None, help_attrs=dict(hidden=True), fetch_offline_members=False)
 
-        self.del_msgs_on_command = False
+        self.del_msgs_on_command = True
         self.client_id = config.BOT_CLIENT_ID
         self.session = aiohttp.ClientSession(loop=self.loop)
 

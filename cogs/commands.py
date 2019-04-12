@@ -5,6 +5,7 @@ import nhentai
 import random
 import logging
 from nhentai import errors
+import config
 
 TEAQ_ID = 152373455529050113
 TEAQ_NSFW_ID = 335770969362792448
@@ -55,6 +56,21 @@ class GeneralCommands(commands.Cog):
     @checks.is_admin()
     async def purge(self, ctx):
         deleted = await ctx.channel.purge(limit=100, check=self.is_me)
+        await ctx.send('Deleted {} message(s)'.format(len(deleted)))
+
+    def check_prefix(self, message):
+        if message is not None:
+            try:
+                return message.content[0] == config.BOT_PREFIX
+            except IndexError:
+                return False
+        else:
+            return False
+
+    @commands.command()
+    @checks.is_admin()
+    async def delcmds(self, ctx):
+        deleted = await ctx.channel.purge(limit=100, check=self.check_prefix)
         await ctx.send('Deleted {} message(s)'.format(len(deleted)))
 
     @commands.command()
