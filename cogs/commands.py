@@ -5,8 +5,8 @@ import nhentai
 import random
 from nhentai import errors
 
-DNSEA_ID = 152373455529050113
-
+TEAQ_ID = 152373455529050113
+TEAQ_NSFW_ID = 335770969362792448
 
 class GeneralCommands(commands.Cog):
     """General commands."""
@@ -54,7 +54,7 @@ class GeneralCommands(commands.Cog):
         await ctx.send('Deleted {} message(s)'.format(len(deleted)))
 
     @commands.command()
-    @checks.is_in_guilds(DNSEA_ID)
+    @checks.is_in_channel(TEAQ_NSFW_ID)
     async def nh(self, ctx, tag):
         itag = int(tag)
         try:
@@ -68,7 +68,7 @@ class GeneralCommands(commands.Cog):
             await ctx.send("Doujinshi not found.")
 
     @commands.command()
-    @checks.is_in_guilds(DNSEA_ID)
+    @checks.is_in_channel(TEAQ_NSFW_ID)
     async def nhsearch(self, ctx, query):
         page = random.randint(1, 10)
         results = [d for d in nhentai.search(query, page)]
