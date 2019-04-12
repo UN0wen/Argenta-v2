@@ -18,8 +18,12 @@ class DNSEA(commands.Cog):
         self.snap_total = 0
         self.snap_list = []
         self.survivor_list = []
-
+        self.snap_member_names = [
+            'Mobochi~', 'Qing', 'icedcoffee', 'TomatoKun', 'Arc.Ciel', 'Silvie', 'Zen', 'Derick', 'smol qxuu', 'Rose', 'Jean', 'Zero', 'HoeLee', 'riko', 'Ernest', 'Nitefail', 'Aldossoul', 'WolfLover', 'Hazu', 'Mari', 'Marty', 'ᴱᵍᵍᶜᵘᵈᵈˡᵉʳ', 'Genny', 'SnowCoal31', 'Arch', 'Kura', 'YouBestWaifu', 'Gaunt', 'ibachu', 'Lucerie', 'razorgab', 'jason_rav', 'Arian', 'chubbychow', 'Folmore', 'Lazzu', 'Zesh', 'notyKet', 'Yeong', 'Keitaro', 'Mong 몽 TWICE 최고', 'Kocheng', 'Sazazary', 'Jariri☆', 'Lunch', 'Shirò', 'Yunoki', 'Clarent', 'Nippie']
+        self.snap_survivor_names = [
+            'Sammy', 'Valerie', 'Hie', 'Pudding', 'xhamster', 'Lance', 'Xuân Oanh', 'Valky', 'EksdDii', 'Yui', 'Gigi', 'Alice~', 'Eirawen', 'fuchi', 'Eiransu', 'Alb', 'Crook', 'Tachi', 'pchan v20.19', 'Disappointment', 'You', 'Teryshicka', 'Chitose86', 'Ereshkigal Waiting Room', 'kat', 'Nem', 'shinon', 'Thori', 'Shai', 'Lavienne', 'Custavio', 'Hept', 'CHillD', 'Reyisaki', 'Sciophe', 'NasagiChan', 'Micci', 'ace', 'Chunami', 'YairFrost', 'rukki', 'Shiraia', 'PanParanPam', 'Bear', 'Jimmy V', 'Lightnux', 'Chaika :two_hearts:', 'Beanut']
     """Clean commands"""
+
     @commands.group(pass_context=True)
     async def clean(self, ctx):
         """Displays a random thing you request."""
@@ -108,7 +112,7 @@ class DNSEA(commands.Cog):
     @checks.is_admin()
     @commands.is_owner()
     async def kill(self, ctx):
-        if not self.snap_list:
+    	if not self.snap_list:
             await ctx.send(f'Run {ctx.prefix}snap check to populate list of people to be snapped.')
         else:
             fallen = ctx.guild.get_role(563349066088710144)
@@ -145,6 +149,17 @@ class DNSEA(commands.Cog):
                 await member.remove_roles(avenger)
                 await member.add_roles(citizen)
 
+    @snap.command()
+    @commands.is_owner()
+    async def cleanup(self, ctx):
+	if not self.snap_list:
+	    for mem_nm in self.snap_member_names: 
+	        mem = ctx.guild.get_member_named(mem_nm)
+		self.snap_list.append(mem)
+	    for mem_nm in self.snap_survivor_names:
+                mem = ctx.guild.get_member_named(mem_nm)
+		self.survivor_list.append(mem)
+	    await ctx.send("Loaded snap list.")
 
 def setup(bot):
     bot.add_cog(DNSEA(bot))

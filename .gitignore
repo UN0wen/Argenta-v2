@@ -3,3 +3,6 @@
 /__pycache__/
 /cogs/__pycache__/
 argenta.log
+/cogs/utils/__pycache__/
+/ArgentaV2/
+/config.py
