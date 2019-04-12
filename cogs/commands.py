@@ -1,6 +1,11 @@
 from discord.ext import commands
 from cogs.utils import checks
 import discord
+import nhentai
+import random
+from nhentai import errors
+
+DNSEA_ID = 152373455529050113
 
 
 class GeneralCommands(commands.Cog):
@@ -47,6 +52,36 @@ class GeneralCommands(commands.Cog):
     async def purge(self, ctx):
         deleted = await ctx.channel.purge(limit=100, check=self.is_me)
         await ctx.send('Deleted {} message(s)'.format(len(deleted)))
+
+    @commands.command()
+    @checks.is_in_guilds(DNSEA_ID)
+    async def nh(self, ctx, tag):
+        itag = int(tag)
+        try:
+            d = nhentai.Doujinshi(itag)
+            url = f"http://nhentai.net/g/{tag}"
+            desc = f"""Tags = {d.tags}"""
+            e = discord.Embed(title=d.name, description=desc, url=url)
+            e.set_image(url=d[0])
+            await ctx.send(embed=e)
+        except errors.DoujinshiNotFound:
+            await ctx.send("Doujinshi not found.")
+
+    @commands.command()
+    @checks.is_in_guilds(DNSEA_ID)
+    async def nhsearch(self, ctx, query):
+        page = random.randint(1, 10)
+        results = [d for d in nhentai.search(query, page)]
+        try:
+            d = random.choice(results)
+            url = f"http://nhentai.net/g/{d.magic}"
+            desc = f"""Tags = {d.tags}"""
+            e = discord.Embed(title=d.name, description=desc, url=url)
+            e.set_image(url=d[0])
+            await ctx.send(embed=e)
+        except errors.DoujinshiNotFound:
+            await ctx.send("Doujinshi not found.")
+
 
 def setup(bot):
     bot.add_cog(GeneralCommands(bot))
