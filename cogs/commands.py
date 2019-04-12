@@ -3,10 +3,14 @@ from cogs.utils import checks
 import discord
 import nhentai
 import random
+import logging
 from nhentai import errors
 
 TEAQ_ID = 152373455529050113
 TEAQ_NSFW_ID = 335770969362792448
+
+log = logging.getLogger(__name__)
+
 
 class GeneralCommands(commands.Cog):
     """General commands."""
@@ -63,8 +67,10 @@ class GeneralCommands(commands.Cog):
             desc = f"""Tags = {d.tags}"""
             e = discord.Embed(title=d.name, description=desc, url=url)
             e.set_image(url=d[0])
+            log.info("Doujin requested.")
             await ctx.send(embed=e)
         except errors.DoujinshiNotFound:
+            log.info(f"Requested: {tag}. Doujin not found.")
             await ctx.send("Doujinshi not found.")
 
     @commands.command()
@@ -78,8 +84,10 @@ class GeneralCommands(commands.Cog):
             desc = f"""Tags = {d.tags}"""
             e = discord.Embed(title=d.name, description=desc, url=url)
             e.set_image(url=d[0])
+            log.info("Doujin search requested.")
             await ctx.send(embed=e)
         except errors.DoujinshiNotFound:
+            log.info(f"Requested: {query}. Doujin not found.")
             await ctx.send("Doujinshi not found.")
 
 
