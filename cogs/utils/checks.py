@@ -92,3 +92,12 @@ def is_in_channel(*channel_ids):
             return False
         return channel.id in channel_ids
     return commands.check(predicate)
+
+
+def is_bot_channel():
+    def predicate(ctx):
+        channel = ctx.channel
+        if channel is None:
+            return False
+        return channel.name.startswith("bb") or channel.name.startswith("bot")
+    return commands.check(predicate)

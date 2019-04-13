@@ -24,6 +24,7 @@ log = logging.getLogger(__name__)
 initial_extensions = (
     'cogs.commands',
     'cogs.dnsea',
+    'cogs.warframe',
 )
 
 
