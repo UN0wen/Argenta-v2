@@ -80,9 +80,11 @@ class GeneralCommands(commands.Cog):
         try:
             d = nhentai.Doujinshi(itag)
             url = f"http://nhentai.net/g/{tag}"
-            desc = f"""Tags = {d.tags}"""
-            e = discord.Embed(title=d.name, description=desc, url=url)
-            e.set_image(url=d[0])
+            e = discord.Embed(title=d.name, url=url)
+            e.add_field(name="Magic number", value=d.magic)
+            e.add_field(name="Tags", value=', '.join(d.tags))
+            e.set_image(url=d.cover)
+            e.colour = discord.Colour.teal()
             log.info("Doujin requested.")
             await ctx.send(embed=e)
         except errors.DoujinshiNotFound:
@@ -97,9 +99,11 @@ class GeneralCommands(commands.Cog):
         try:
             d = random.choice(results)
             url = f"http://nhentai.net/g/{d.magic}"
-            desc = f"""Tags = {d.tags}"""
-            e = discord.Embed(title=d.name, description=desc, url=url)
-            e.set_image(url=d[0])
+            e = discord.Embed(title=d.name, url=url)
+            e.add_field(name="Magic number", value=d.magic)
+            e.add_field(name="Tags", value=', '.join(d.tags))
+            e.set_image(url=d.cover)
+            e.colour = discord.Colour.teal()
             log.info("Doujin search requested.")
             await ctx.send(embed=e)
         except errors.DoujinshiNotFound:

@@ -7,7 +7,7 @@ from .embeds.alerts_em import AlertsEmbed
 from .embeds.fissures import FissuresEmbed
 from .embeds.sortie import SortieEmbed
 from .embeds.timers import TimersEmbed
-
+from .embeds.baro_em import BaroEmbed
 log = logging.getLogger(__name__)
 
 api_endpoint = "https://api.warframestat.us/pc/"
@@ -59,7 +59,6 @@ class Warframe(commands.Cog):
                 return json_rsp
 
     @commands.command()
-    @checks.is_bot_channel()
     async def wf(self, ctx, event):
         log.info(f"Wf event requested for: {event}.")
         if event == 'sorties':
@@ -95,6 +94,11 @@ class Warframe(commands.Cog):
             vallis = await self.get_json(self.timers[2])
             e = TimersEmbed(cetus, earth, vallis)
             return e
+
+    async def get_baro_embed(self, event):
+        rsp = await self.get_json(event)
+        e = BaroEmbed(rsp)
+        return e
 
 
 def setup(bot):
