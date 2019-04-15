@@ -8,6 +8,7 @@ from .embeds.fissures import FissuresEmbed
 from .embeds.sortie import SortieEmbed
 from .embeds.timers import TimersEmbed
 from .embeds.baro_em import BaroEmbed
+from .embeds.invasion import InvasionsEmbed
 log = logging.getLogger(__name__)
 
 api_endpoint = "https://api.warframestat.us/pc/"
@@ -98,6 +99,11 @@ class Warframe(commands.Cog):
     async def get_baro_embed(self, event):
         rsp = await self.get_json(event)
         e = BaroEmbed(rsp)
+        return e
+
+    async def get_invasions_embed(self, event):
+        rsp = await self.get_json(event)
+        e = InvasionsEmbed(rsp)
         return e
 
 
