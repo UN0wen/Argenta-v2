@@ -69,8 +69,11 @@ class Warframe(commands.Cog):
         if event == 'sorties':
             event = 'sortie'
         embeds = await self.get_event_embed(event)
-        for embed in embeds:
-            await ctx.send(embed=embed)
+        if isinstance(embeds, list):
+            for embed in embeds:
+                await ctx.send(embed=embed)
+        else:
+            await ctx.send(embed=embeds)
 
     async def get_event_embed(self, event):
         """Get the embed for the the event_type wanted."""
