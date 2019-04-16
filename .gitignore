@@ -1,6 +1,6 @@
 /venv/
 /.idea/
-*/__pycache__/
+*/__pycache__/*
 argenta.log
 /ArgentaV2/
 /config.py
