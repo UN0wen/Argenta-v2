@@ -127,6 +127,8 @@ class GeneralCommands(commands.Cog):
     async def nhsearch(self, ctx, *, query):
         page = random.randint(1, 10)
         results = [d for d in nhentai.search(query, page)]
+        if not results:
+            results = [d for d in nhentai.search(query, 1)]
         try:
             d = random.choice(results)
             url = f"http://nhentai.net/g/{d.magic}"
@@ -139,8 +141,10 @@ class GeneralCommands(commands.Cog):
             await ctx.send(embed=e)
         except errors.DoujinshiNotFound:
             log.info(f"Requested: {query}. Doujin not found.")
-            await ctx.send("Doujinshi not found.")
-
+            await ctx.send(f"Doujinshi not found with query {query}")
+        except IndexError:
+            log.info(f"Requested: {query}. Doujin not found.")
+            await ctx.send(f"Doujinshi not found with query {query}")
 
 def setup(bot):
     bot.add_cog(GeneralCommands(bot))
