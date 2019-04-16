@@ -52,10 +52,10 @@ class GeneralCommands(commands.Cog):
 
     @commands.command()
     @checks.is_mod()
-    async def user(self, ctx, user):
-        mem = ctx.message.mentions[0]
-
-        if mem is None:
+    async def user(self, ctx, *, user):
+        if ctx.message.mentions:
+            mem = ctx.message.mentions[0]
+        else:
             try:
                 uid = int(user)
                 mem = ctx.guild.get_member(uid)
