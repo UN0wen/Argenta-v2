@@ -5,6 +5,7 @@ import nhentai
 import random
 import logging
 from nhentai import errors
+from datetime import datetime
 import config
 
 TEAQ_ID = 152373455529050113
@@ -48,6 +49,36 @@ class GeneralCommands(commands.Cog):
             await ctx.send("Now deleting command invocation messages.")
         else:
             await ctx.send("Stopped deleting command invocation messages.")
+
+    @commands.command()
+    @checks.is_mod()
+    async def user(self, ctx, user):
+        mem = ctx.message.mentions[0]
+
+        if mem is None:
+            try:
+                uid = int(user)
+                mem = ctx.guild.get_member(uid)
+            except ValueError:
+                mem = ctx.guild.get_member_named(user)
+
+        url = mem.avatar_url
+        uname = f"{mem.name}#{mem.discriminator}"
+        created_date_str = mem.created_at.strftime("%d/%m/%Y, %H:%M:%S")
+        guild_join_date_str = mem.joined_at.strftime("%d/%m/%Y, %H:%M:%S")
+
+        mem_roles = mem.roles[1:]
+
+        e = discord.Embed(title=uname)
+        e.colour = discord.Colour.teal()
+        e.add_field(name="User ID", value=mem.id)
+        e.add_field(name="Bot", value=mem.bot)
+        e.add_field(name="Guild join date", value=guild_join_date_str)
+        e.add_field(name="Account creation date", value=created_date_str)
+        e.add_field(name="Roles", value=', '.join(map(str, mem_roles)))
+        e.add_field(name="Status", value=mem.status)
+        e.set_thumbnail(url=url)
+        await ctx.send(embed=e)
 
     def is_me(self, message):
         return message.author == self.bot.user

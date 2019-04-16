@@ -46,7 +46,7 @@ def has_guild_permissions(*, check=all, **perms):
 
 def is_mod():
     async def pred(ctx):
-        return await check_guild_permissions(ctx, {'manage_guild': True})
+        return await check_guild_permissions(ctx, {'manage_channels': True})
     return commands.check(pred)
 
 
@@ -57,7 +57,7 @@ def is_admin():
 
 
 def mod_or_permissions(**perms):
-    perms['manage_guild'] = True
+    perms['manage_channels'] = True
 
     async def predicate(ctx):
         return await check_guild_permissions(ctx, perms, check=any)
