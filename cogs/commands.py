@@ -124,7 +124,7 @@ class GeneralCommands(commands.Cog):
 
     @commands.command()
     @checks.is_in_channel(TEAQ_NSFW_ID)
-    async def nhsearch(self, ctx, query):
+    async def nhsearch(self, ctx, *, query):
         page = random.randint(1, 10)
         results = [d for d in nhentai.search(query, page)]
         try:
