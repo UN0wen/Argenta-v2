@@ -9,6 +9,8 @@ from .embeds.sortie import SortieEmbed
 from .embeds.timers import TimersEmbed
 from .embeds.baro_em import BaroEmbed
 from .embeds.invasion import InvasionsEmbed
+from .embeds.nightwave import NightwaveEmbed
+
 log = logging.getLogger(__name__)
 
 api_endpoint = "https://api.warframestat.us/pc/"
@@ -36,7 +38,8 @@ class Warframe(commands.Cog):
                           "invasions": self.invasion_str,
                           "sortie": self.sortie_str,
                           "vallis": self.vallis_str,
-                          "baro": self.baro_str
+                          "baro": self.baro_str,
+                          "nightwave": self.nightwave_str
                             }
         self._d_embeds = {"alerts": "get_alerts_embed",
                           "timers": "get_timers_embed",
@@ -44,7 +47,8 @@ class Warframe(commands.Cog):
                           "fissures": "get_fissures_embed",
                           "invasions": "get_invasions_embed",
                           "sortie": "get_sortie_embed",
-                          "baro": "get_baro_embed"
+                          "baro": "get_baro_embed",
+                          "nightwave": "get_nightwave_embed"
                             }
 
     async def fetch_json(self, session, url):
@@ -64,8 +68,9 @@ class Warframe(commands.Cog):
         log.info(f"Wf event requested for: {event}.")
         if event == 'sorties':
             event = 'sortie'
-        embed = await self.get_event_embed(event)
-        await ctx.send(embed=embed)
+        embeds = await self.get_event_embed(event)
+        for embed in embeds:
+            await ctx.send(embed=embed)
 
     async def get_event_embed(self, event):
         """Get the embed for the the event_type wanted."""
@@ -105,6 +110,12 @@ class Warframe(commands.Cog):
         rsp = await self.get_json(event)
         e = InvasionsEmbed(rsp)
         return e
+
+    async def get_nightwave_embed(self, event):
+        rsp = await self.get_json(event)
+        e1 = NightwaveEmbed(rsp, daily=True)
+        e2 = NightwaveEmbed(rsp, daily=False)
+        return e1, e2
 
 
 def setup(bot):

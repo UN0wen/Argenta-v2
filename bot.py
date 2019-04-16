@@ -65,7 +65,7 @@ class Argenta(commands.Bot):
             await ctx.send(error)
 
         await asyncio.sleep(5)
-        await ctx.channel.purge(limit=5, check=self.is_me)
+        await ctx.channel.purge(limit=1, check=self.is_me)
 
     async def on_ready(self):
         if not hasattr(self, 'uptime'):
