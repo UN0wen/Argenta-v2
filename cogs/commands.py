@@ -32,6 +32,7 @@ class GeneralCommands(commands.Cog):
     @commands.command()
     @checks.is_bot_channel()
     async def afk(self, ctx, *, afk_msg):
+        """Set afk message. Set to . to cancel."""
         if not afk_msg:
             await ctx.send("Please specify an argument for the afk message.")
         else:
@@ -39,15 +40,9 @@ class GeneralCommands(commands.Cog):
                 return
 
     @commands.command()
-    @commands.is_owner()
-    async def react(self, ctx):
-        msg = await ctx.channel.fetch_message(492013238670589973)
-        print(msg.reactions)
-        await msg.add_reaction(msg.reactions[0])
-
-    @commands.command()
     @checks.is_in_channel(TEAQ_NSFW_ID)
     async def nh(self, ctx, tag):
+        """Displays the nhentai doujin with id <tag>"""
         itag = int(tag)
         try:
             d = nhentai.Doujinshi(itag)
@@ -66,6 +61,8 @@ class GeneralCommands(commands.Cog):
     @commands.command()
     @checks.is_in_channel(TEAQ_NSFW_ID)
     async def nhsearch(self, ctx, *, query):
+        """Issues a search to nhentai with <query>.
+        Displays a random doujin selected from the search results."""
         page = random.randint(1, 10)
         results = [d for d in nhentai.search(query, page)]
         if not results:

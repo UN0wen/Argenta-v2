@@ -34,16 +34,18 @@ class DNSEA(commands.Cog):
         if ctx.invoked_subcommand is None:
             await ctx.send(f'Incorrect clean subcommand passed.')
 
-    @clean.command()
-    @checks.is_in_channel(TH_id, PT_id)
+    @clean.command(hidden=False)
     async def verify(self, ctx):
         """Verify the number of messages to delete.
         Displays the first and last message to be deleted,
         as well as the total number."""
         if ctx.channel.id == TH_id:
             delete_time = self.TH_delete_time
-        else:
+        elif ctx.channel.id == PT_id:
             delete_time = self.PT_delete_time
+        else:
+            await ctx.send('This command cannot be used here.')
+            return
 
         time_threshold = datetime.datetime.utcnow() - delete_time
         pins = await ctx.channel.pins()
@@ -56,14 +58,17 @@ class DNSEA(commands.Cog):
             First message is: <{deleted[0].jump_url}>.
             Last message is: <{deleted[-1].jump_url}>.""")
 
-    @clean.command()
-    @checks.is_in_channel(TH_id, PT_id)
+    @clean.command(hidden=False)
     async def delete(self, ctx):
-        """Delete messages that are more than 7 days old in Trading House and 1 day old in PT-recruitment."""
+        """Delete messages that are more than 7 days old in Trading House
+        and 1 day old in PT-recruitment."""
         if ctx.channel.id == TH_id:
             delete_time = self.TH_delete_time
-        else:
+        elif ctx.channel.id == PT_id:
             delete_time = self.PT_delete_time
+        else:
+            await ctx.send('This command cannot be used here.')
+            return
 
         time_threshold = datetime.datetime.utcnow() - delete_time
         pins = await ctx.channel.pins()
@@ -71,7 +76,6 @@ class DNSEA(commands.Cog):
         deleted = await ctx.channel.purge(limit=1000, before=time_threshold, after=last_pinned, bulk=True)
         await ctx.send(f'Deleted {len(deleted)} message(s).')
 
-    """Snap commands"""
     @commands.group(pass_context=True)
     async def snap(self, ctx):
         """OH SNAP"""
