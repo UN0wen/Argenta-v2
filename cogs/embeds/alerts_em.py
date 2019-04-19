@@ -29,7 +29,7 @@ class AlertsEmbed(Embed):
 		"""
 
 		self._desc_gotl = "Gift of The Lotus"
-		title = "Alert"
+		title = "Alerts"
 		Embed.__init__(self, title=title, type="rich")
 		if alerts is not None:
 			for alert in alerts:
@@ -45,10 +45,10 @@ class AlertsEmbed(Embed):
 		"""
 		node = alert['mission']['node']
 		desc = alert['mission']['description']
-		level = alert['mission']['level']
+		level = f"{alert['mission']['minEnemyLevel']} - {alert['mission']['maxEnemyLevel']}"
 		faction = alert['mission']['faction']
 		mission_type = alert['mission']['type']
-		rewards = alert['mission']['rewards']['asString']
+		rewards = alert['mission']['reward']['asString']
 		eta = alert['eta']
 
 		field_value = faction + " - " + node + "\nLevel: " + level

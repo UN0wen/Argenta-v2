@@ -37,7 +37,7 @@ class BaroEmbed(Embed):
 			field_value = f"{ducat} ducats + {credit} credits"
 		else:
 			field_value  = f"{credit} credits"
-		self.add_field(name=field_name, value=field_value)
+		self.add_field(name=field_name, value=field_value, inline=False)
 
 	def getItemName(self, item, debug):
 		"""Retrieve the name of the item, if unlocalised give a PH name, unless debug is set to True."""

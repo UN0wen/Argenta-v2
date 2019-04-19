@@ -16,6 +16,10 @@ class NightwaveEmbed(Embed):
         self.daily = daily
         title = f"Nightwave Season {nw['season']} - {mission_str}"
         Embed.__init__(self, title=title, type="rich")
+        nightwave_url = "https://warframe.fandom.com/wiki/Nightwave"
+        nightwave_banner = "https://vignette.wikia.nocookie.net/warframe/images/e/e0/NightwaveSyndicate.png"
+        self.set_thumbnail(url=nightwave_banner)
+        self.url = nightwave_url
         self.colour = color
         for challenge in nw['activeChallenges']:
             if not daily and 'isDaily' not in challenge:
@@ -34,4 +38,4 @@ class NightwaveEmbed(Embed):
             time_str = f"""{time_remaining.days * 24 + time_remaining.seconds//3600}h {(time_remaining.seconds//60)%60}m {time_remaining.seconds%60}s"""
             desc += f'\nTime remaining: {time_str}'
 
-        self.add_field(name=field_name, value=desc)
+        self.add_field(name=field_name, value=desc, inline=False)

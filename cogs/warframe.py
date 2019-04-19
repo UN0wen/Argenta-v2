@@ -69,7 +69,7 @@ class Warframe(commands.Cog):
         if event == 'sorties':
             event = 'sortie'
         embeds = await self.get_event_embed(event)
-        if isinstance(embeds, list):
+        if isinstance(embeds, tuple):
             for embed in embeds:
                 await ctx.send(embed=embed)
         else:

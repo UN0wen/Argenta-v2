@@ -25,6 +25,8 @@ initial_extensions = (
     'cogs.commands',
     'cogs.dnsea',
     'cogs.warframe',
+    'cogs.admin',
+    'cogs.owl',
 )
 
 
