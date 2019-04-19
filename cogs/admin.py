@@ -16,12 +16,12 @@ class Admin(commands.Cog):
         self._last_result = None
         self.sessions = set()
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.is_owner()
     async def changegame(self, ctx, game):
         await ctx.bot.change_presence(activity=discord.Game(name=game))
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.is_owner()
     async def changestatus(self, ctx, status):
         if status == 'invisible':
@@ -37,7 +37,7 @@ class Admin(commands.Cog):
         if sts:
             await ctx.bot.change_presence(status=sts)
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.is_owner()
     async def delmsgsoncmd(self, ctx):
         ctx.bot.del_msgs_on_command = not ctx.bot.del_msgs_on_command
@@ -49,6 +49,7 @@ class Admin(commands.Cog):
     @commands.command()
     @checks.is_mod()
     async def user(self, ctx, *, user):
+        """Shows information about the user."""
         if ctx.message.mentions:
             mem = ctx.message.mentions[0]
         else:
@@ -79,7 +80,7 @@ class Admin(commands.Cog):
     def is_me(self, message):
         return message.author == self.bot.user
 
-    @commands.command()
+    @commands.command(hidden=True)
     @checks.is_admin()
     async def purge(self, ctx):
         deleted = await ctx.channel.purge(limit=100, check=self.is_me)
@@ -94,7 +95,7 @@ class Admin(commands.Cog):
         else:
             return False
 
-    @commands.command()
+    @commands.command(hidden=True)
     @checks.is_admin()
     async def delcmds(self, ctx):
         deleted = await ctx.channel.purge(limit=100, check=self.check_prefix)

@@ -30,13 +30,16 @@ class DNSEA(commands.Cog):
 
     @commands.group(pass_context=True)
     async def clean(self, ctx):
-        """Displays a random thing you request."""
+        """Clean messages. (Only works in DNSEA)"""
         if ctx.invoked_subcommand is None:
             await ctx.send(f'Incorrect clean subcommand passed.')
 
     @clean.command()
     @checks.is_in_channel(TH_id, PT_id)
     async def verify(self, ctx):
+        """Verify the number of messages to delete.
+        Displays the first and last message to be deleted,
+        as well as the total number."""
         if ctx.channel.id == TH_id:
             delete_time = self.TH_delete_time
         else:
@@ -56,6 +59,7 @@ class DNSEA(commands.Cog):
     @clean.command()
     @checks.is_in_channel(TH_id, PT_id)
     async def delete(self, ctx):
+        """Delete messages that are more than 7 days old in Trading House and 1 day old in PT-recruitment."""
         if ctx.channel.id == TH_id:
             delete_time = self.TH_delete_time
         else:
@@ -70,7 +74,7 @@ class DNSEA(commands.Cog):
     """Snap commands"""
     @commands.group(pass_context=True)
     async def snap(self, ctx):
-        """Displays a random thing you request."""
+        """OH SNAP"""
         if ctx.invoked_subcommand is None:
             await ctx.send(f'Incorrect snap subcommand passed.')
 
@@ -82,6 +86,7 @@ class DNSEA(commands.Cog):
     @checks.is_admin()
     @commands.is_owner()
     async def check(self, ctx):
+        """Initializes a list of users to be snapped (half of all users who talked in the invoked channel)"""
         author_list = await ctx.channel.history().flatten()
         snap_set = set()
         for message in author_list:
@@ -118,6 +123,7 @@ class DNSEA(commands.Cog):
     @checks.is_admin()
     @commands.is_owner()
     async def kill(self, ctx):
+        """The snap."""
         if not self.snap_list:
             await ctx.send(f'Run {ctx.prefix}snap check to populate list of people to be snapped.')
         else:
@@ -149,6 +155,7 @@ class DNSEA(commands.Cog):
     @checks.is_admin()
     @commands.is_owner()
     async def reverse(self, ctx):
+        """The snap was a lie."""
         fallen = ctx.guild.get_role(563349066088710144)
         avenger = ctx.guild.get_role(563349115992539208)
         citizen = ctx.guild.get_role(264072124069707798)
@@ -167,7 +174,7 @@ class DNSEA(commands.Cog):
                 log.info(f"Saved {member.name}.")
                 await asyncio.sleep(3)
 
-    @snap.command()
+    @snap.command(hidden=True)
     @commands.is_owner()
     async def cleanup(self, ctx):
         if not self.snap_list:
@@ -182,6 +189,7 @@ class DNSEA(commands.Cog):
     @commands.command()
     @checks.is_in_channel(563348844075810836)
     async def free(self, ctx):
+        """Let the fallen leave the soul stone as a Coward."""
         fallen = ctx.guild.get_role(563349066088710144)
         citizen = ctx.guild.get_role(264072124069707798)
         coward = ctx.guild.get_role(563371239276806165)

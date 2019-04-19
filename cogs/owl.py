@@ -45,6 +45,7 @@ class OWL(commands.Cog):
 
     @commands.group(pass_context=True)
     async def owl(self, ctx):
+        """Display the status of Overwatch League matches."""
         if ctx.invoked_subcommand is None:
             await ctx.send(f'Incorrect OWL subcommand passed.')
         else:
@@ -52,6 +53,7 @@ class OWL(commands.Cog):
 
     @owl.command()
     async def live(self, ctx):
+        """Display the current total and map score as well as the map pool of the current match."""
         rsp = await self.get_json('live')
         match = rsp['data']['liveMatch']
         title = f"{match['competitors'][0]['name']} - {match['competitors'][1]['name']}"
@@ -86,7 +88,13 @@ class OWL(commands.Cog):
 
     @owl.command()
     async def today(self, ctx):
+        """Displays all scores of today's matches."""
         today = datetime.datetime.now(tz=la_tz).date()
+        try:
+            sched = self.schedule[str(today)]
+        except KeyError:
+            await ctx.send("There are no Overwatch League matches today.")
+            return
         title = f"Overwatch League 2019 Season - {today}"
         e = discord.Embed(title=title, type='rich')
 
@@ -95,7 +103,7 @@ class OWL(commands.Cog):
 
         e.url = "https://www.twitch.tv/overwatchleague"
 
-        for match_id in self.schedule[str(today)]:
+        for match_id in sched:
             async with aiohttp.ClientSession() as session:
                 url = f"{api_endpoint}matches/{match_id}"
                 match = await self.fetch_json(session, url)
