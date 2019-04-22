@@ -48,7 +48,7 @@ class Admin(commands.Cog):
 
     @commands.command()
     @checks.is_mod()
-    async def user(self, ctx, *, user):
+    async def member(self, ctx, *, user):
         """Shows information about the user."""
         if ctx.message.mentions:
             mem = ctx.message.mentions[0]
@@ -74,6 +74,32 @@ class Admin(commands.Cog):
         e.add_field(name="Account creation date", value=created_date_str)
         e.add_field(name="Roles", value=', '.join(map(str, mem_roles)))
         e.add_field(name="Status", value=mem.status)
+        e.set_thumbnail(url=url)
+        await ctx.send(embed=e)
+
+    @commands.command()
+    @checks.is_mod()
+    async def user(self, ctx, *, uid):
+        """Shows information about the user with user id UID."""
+        try:
+            user = self.bot.get_user(int(uid))
+        except ValueError:
+            await ctx.send(f"Invalid argument.")
+            return
+
+        if user is None:
+            await ctx.send(f"User with id {uid} not found.")
+            return
+
+        url = user.avatar_url
+        uname = f"{user.name}#{user.discriminator}"
+        created_date_str = user.created_at.strftime("%d/%m/%Y, %H:%M:%S")
+
+        e = discord.Embed(title=uname)
+        e.colour = discord.Colour.teal()
+        e.add_field(name="User ID", value=user.id)
+        e.add_field(name="Bot", value=user.bot)
+        e.add_field(name="Account creation date", value=created_date_str)
         e.set_thumbnail(url=url)
         await ctx.send(embed=e)
 

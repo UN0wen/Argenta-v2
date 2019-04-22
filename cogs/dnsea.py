@@ -37,8 +37,7 @@ class DNSEA(commands.Cog):
     @clean.command(hidden=False)
     async def verify(self, ctx):
         """Verify the number of messages to delete.
-        Displays the first and last message to be deleted,
-        as well as the total number."""
+        Displays the first and last message to be deleted, as well as the total number."""
         if ctx.channel.id == TH_id:
             delete_time = self.TH_delete_time
         elif ctx.channel.id == PT_id:
@@ -60,8 +59,8 @@ class DNSEA(commands.Cog):
 
     @clean.command(hidden=False)
     async def delete(self, ctx):
-        """Delete messages that are more than 7 days old in Trading House
-        and 1 day old in PT-recruitment."""
+        """Delete old messages.
+        Messages that are more than 7 days old in Trading House and 1 day old in PT-recruitment are deleted."""
         if ctx.channel.id == TH_id:
             delete_time = self.TH_delete_time
         elif ctx.channel.id == PT_id:
