@@ -3,17 +3,11 @@ import discord
 import logging
 from discord.ext import commands
 import config
+from cogs.utils import context
 import aiohttp
 import asyncio
 import traceback
 import datetime
-
-try:
-    import uvloop
-except ImportError:
-    pass
-else:
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 description = """
 I'm Argenta but Better
@@ -56,9 +50,7 @@ class Argenta(commands.Bot):
         elif isinstance(error, commands.DisabledCommand):
             await ctx.author.send('Sorry. This command is disabled and cannot be used.')
         elif isinstance(error, commands.CheckFailure):
-            await ctx.send("Sorry, you don't have the necessary permissions to use this command.")
-            await asyncio.sleep(1)
-            await ctx.channel.purge(limit=1, check=self.is_me)
+            await ctx.send("Sorry, you don't have the necessary permissions to use this command.", delete_after=3)
         elif isinstance(error, commands.CommandInvokeError):
             original = error.original
             if not isinstance(original, discord.HTTPException):
@@ -83,6 +75,18 @@ class Argenta(commands.Bot):
     async def on_command(self, ctx):
         if self.del_msgs_on_command:
             await ctx.message.delete()
+
+    async def process_commands(self, message):
+        ctx = await self.get_context(message, cls=context.Context)
+
+        if ctx.command is None:
+            return
+
+        try:
+            await self.invoke(ctx)
+        finally:
+            # Just in case we have any outstanding DB connections
+            await ctx.release()
 
     async def close(self):
         await super().close()
