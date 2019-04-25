@@ -59,6 +59,10 @@ class Admin(commands.Cog):
             except ValueError:
                 mem = ctx.guild.get_member_named(user)
 
+        if mem is None:
+            await ctx.send("Member not found.")
+            return
+
         url = mem.avatar_url
         uname = f"{mem.name}#{mem.discriminator}"
         created_date_str = mem.created_at.strftime("%d/%m/%Y, %H:%M:%S")
@@ -67,13 +71,17 @@ class Admin(commands.Cog):
         mem_roles = mem.roles[1:]
 
         e = discord.Embed(title=uname)
+
         e.colour = discord.Colour.teal()
-        e.add_field(name="User ID", value=mem.id)
-        e.add_field(name="Bot", value=mem.bot)
-        e.add_field(name="Guild join date", value=guild_join_date_str)
-        e.add_field(name="Account creation date", value=created_date_str)
-        e.add_field(name="Roles", value=', '.join(map(str, mem_roles)))
-        e.add_field(name="Status", value=mem.status)
+        e.add_field(name="User ID", value=mem.id, inline=False)
+        e.add_field(name="Bot", value=mem.bot, inline=False)
+        e.add_field(name="Guild join date", value=guild_join_date_str, inline=False)
+        e.add_field(name="Account creation date", value=created_date_str, inline=False)
+
+        if mem_roles:
+            e.add_field(name="Roles", value=', '.join(map(str, mem_roles)), inline=False)
+
+        e.add_field(name="Status", value=mem.status, inline=False)
         e.set_thumbnail(url=url)
         await ctx.send(embed=e)
 
@@ -97,10 +105,34 @@ class Admin(commands.Cog):
 
         e = discord.Embed(title=uname)
         e.colour = discord.Colour.teal()
-        e.add_field(name="User ID", value=user.id)
-        e.add_field(name="Bot", value=user.bot)
-        e.add_field(name="Account creation date", value=created_date_str)
+        e.add_field(name="User ID", value=user.id, inline=False)
+        e.add_field(name="Bot", value=user.bot, inline=False)
+        e.add_field(name="Account creation date", value=created_date_str, inline=False)
         e.set_thumbnail(url=url)
+        await ctx.send(embed=e)
+
+    @commands.command()
+    @checks.is_mod()
+    async def role(self, ctx, *, role):
+        if isinstance(role, int):
+            r = ctx.guild.get_role(role)
+        else:
+            r = discord.utils.find(lambda m: m.name == role, ctx.guild.roles)
+
+        if r is None:
+            await ctx.send("Role not found.")
+            return
+
+        created_date_str = r.created_at.strftime("%d/%m/%Y, %H:%M:%S")
+
+        e = discord.Embed(title=r.name)
+        e.colour = discord.Colour.teal()
+        e.add_field(name="Role ID", value=r.id, inline=False)
+        e.add_field(name="Colour", value=r.colour, inline=False)
+        e.add_field(name="Number of members with this role", value=str(len(r.members)), inline=False)
+        e.add_field(name="Mentionable", value=r.mentionable, inline=False)
+        e.add_field(name="Role creation date", value=created_date_str, inline=False)
+
         await ctx.send(embed=e)
 
     def is_me(self, message):

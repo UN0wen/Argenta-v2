@@ -19,13 +19,11 @@ class DNSEA(commands.Cog):
         self.TH_delete_time = datetime.timedelta(days=7)
         self.PT_delete_time = datetime.timedelta(days=1)
         self.test_delete_time = datetime.timedelta(minutes=1)
+        self.default_channel = 244790887509393410  # saint-haven
+        self.default_role = 264072124069707798
         self.snap_total = 0
         self.snap_list = []
         self.survivor_list = []
-        self.snap_member_names = [
-            'Mobochi~', 'Qing', 'icedcoffee', 'TomatoKun', 'Arc.Ciel', 'Silvie', 'Zen', 'Derick', 'smol qxuu', 'Rose', 'Jean', 'Zero', 'HoeLee', 'riko', 'Ernest', 'Nitefail', 'Aldossoul', 'WolfLover', 'Hazu', 'Mari', 'Marty', 'ᴱᵍᵍᶜᵘᵈᵈˡᵉʳ', 'Genny', 'SnowCoal31', 'Arch', 'Kura', 'YouBestWaifu', 'Gaunt', 'ibachu', 'Lucerie', 'razorgab', 'jason_rav', 'Arian', 'chubbychow', 'Folmore', 'Lazzu', 'Zesh', 'notyKet', 'Yeong', 'Keitaro', 'Mong 몽 TWICE 최고', 'Kocheng', 'Sazazary', 'Jariri☆', 'Lunch', 'Shirò', 'Yunoki', 'Clarent', 'Nippie']
-        self.snap_survivor_names = [
-            'Sammy', 'Valerie', 'Hie', 'Pudding', 'xhamster', 'Lance', 'Xuân Oanh', 'Valky', 'EksdDii', 'Yui', 'Gigi', 'Alice~', 'Eirawen', 'fuchi', 'Eiransu', 'Alb', 'Crook', 'Tachi', 'pchan v20.19', 'Disappointment', 'You', 'Teryshicka', 'Chitose86', 'Ereshkigal Waiting Room', 'kat', 'Nem', 'shinon', 'Thori', 'Shai', 'Lavienne', 'Custavio', 'Hept', 'CHillD', 'Reyisaki', 'Sciophe', 'NasagiChan', 'Micci', 'ace', 'Chunami', 'YairFrost', 'rukki', 'Shiraia', 'PanParanPam', 'Bear', 'Jimmy V', 'Lightnux', 'Chaika :two_hearts:', 'Beanut']
     """Clean commands"""
 
     @commands.group(pass_context=True)
@@ -166,28 +164,28 @@ class DNSEA(commands.Cog):
         for member in ctx.guild.members:
             member_roles = member.roles
             if fallen in member_roles:
-                await member.remove_roles(fallen)
+                # await member.remove_roles(fallen)
                 await member.add_roles(citizen)
                 log.info(f"Saved {member.name}.")
-                await asyncio.sleep(3)
+                await asyncio.sleep(1)
 
             elif avenger in member_roles:
-                await member.remove_roles(avenger)
+                # await member.remove_roles(avenger)
                 await member.add_roles(citizen)
                 log.info(f"Saved {member.name}.")
-                await asyncio.sleep(3)
+                await asyncio.sleep(1)
 
-    @snap.command(hidden=True)
-    @commands.is_owner()
-    async def cleanup(self, ctx):
-        if not self.snap_list:
-            for mem_nm in self.snap_member_names:
-                mem = ctx.guild.get_member_named(mem_nm)
-                self.snap_list.append(mem)
-            for mem_nm in self.snap_survivor_names:
-                mem = ctx.guild.get_member_named(mem_nm)
-                self.survivor_list.append(mem)
-            await ctx.send("Loaded snap list.")
+    # @snap.command(hidden=True)
+    # @commands.is_owner()
+    # async def cleanup(self, ctx):
+    #     if not self.snap_list:
+    #         for mem_nm in self.snap_member_names:
+    #             mem = ctx.guild.get_member_named(mem_nm)
+    #             self.snap_list.append(mem)
+    #         for mem_nm in self.snap_survivor_names:
+    #             mem = ctx.guild.get_member_named(mem_nm)
+    #             self.survivor_list.append(mem)
+    #         await ctx.send("Loaded snap list.")
 
     @commands.command()
     @checks.is_in_channel(563348844075810836)
@@ -200,6 +198,15 @@ class DNSEA(commands.Cog):
             await ctx.author.remove_roles(fallen)
             await ctx.author.add_roles(coward, citizen)
             await ctx.send(f"{ctx.author.name} has fled. Pathetic.")
+
+    @commands.Cog.listener()
+    async def on_member_update(self, before, after):
+        b_roles = before.roles[1:]
+        if not b_roles:
+            a_roles = after.roles[1:]
+            if len(a_roles) == 1 and a_roles[0].id == self.default_role:
+                chan = self.bot.get_channel(self.default_channel)
+                await chan.send(f"Hmph. {after.mention} has joined us.")
 
 
 def setup(bot):
