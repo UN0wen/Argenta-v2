@@ -27,12 +27,14 @@ class DNSEA(commands.Cog):
     """Clean commands"""
 
     @commands.group(pass_context=True)
+    @checks.is_mod()
     async def clean(self, ctx):
         """Clean messages. (Only works in DNSEA)"""
         if ctx.invoked_subcommand is None:
             await ctx.send(f'Incorrect clean subcommand passed.')
 
     @clean.command(hidden=False)
+    @checks.is_mod()
     async def verify(self, ctx):
         """Verify the number of messages to delete.
         Displays the first and last message to be deleted, as well as the total number."""
@@ -56,6 +58,7 @@ class DNSEA(commands.Cog):
             Last message is: <{deleted[-1].jump_url}>.""")
 
     @clean.command(hidden=False)
+    @checks.is_mod()
     async def delete(self, ctx):
         """Delete old messages.
         Messages that are more than 7 days old in Trading House and 1 day old in PT-recruitment are deleted."""
@@ -75,7 +78,7 @@ class DNSEA(commands.Cog):
 
     @commands.group(pass_context=True)
     async def snap(self, ctx):
-        """OH SNAP"""
+        """Snap commands for the Avengers Endgame event in DNSEA."""
         if ctx.invoked_subcommand is None:
             await ctx.send(f'Incorrect snap subcommand passed.')
 
@@ -87,7 +90,9 @@ class DNSEA(commands.Cog):
     @checks.is_admin()
     @commands.is_owner()
     async def check(self, ctx):
-        """Initializes a list of users to be snapped (half of all users who talked in the invoked channel)"""
+        """Initializes a list of users to be snapped.
+
+        Half of all users who talked in the invoked channel will be chosen randomly to be saved."""
         author_list = await ctx.channel.history().flatten()
         snap_set = set()
         for message in author_list:
@@ -107,6 +112,7 @@ class DNSEA(commands.Cog):
     @checks.is_admin()
     @commands.is_owner()
     async def list(self, ctx):
+        """Lists people who will be snapped."""
         # Debugging
         author_names = []
         author_names_total = []
@@ -156,7 +162,7 @@ class DNSEA(commands.Cog):
     @checks.is_admin()
     @commands.is_owner()
     async def reverse(self, ctx):
-        """The snap was a lie."""
+        """Reverse the snap."""
         fallen = ctx.guild.get_role(563349066088710144)
         avenger = ctx.guild.get_role(563349115992539208)
         citizen = ctx.guild.get_role(264072124069707798)

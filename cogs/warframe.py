@@ -66,13 +66,23 @@ class Warframe(commands.Cog):
     @commands.command()
     async def wf(self, ctx, event):
         """Display an event in Warframe.
+
         Valid events are:
+
         alerts: Currently active alerts.
+
+        baro: Current baro rotation / time until next baro.
+
         timers: Cetus/Earth/Fortuna cycle timers.
+
         fissures: Currently active fissures.
-        Invasions: Currently active invasions.
-        Nightwave: Current weekly/daily rotation of Nightwave.
-        Sortie(s): Today's daily sortie rotation.
+
+        invasions: Currently active invasions.
+
+        nightwave: Current weekly/daily rotation of Nightwave.
+
+        sortie(s): Today's daily sortie rotation.
+
         Fleets: To be implemented.
         """
         log.info(f"Wf event requested for: {event}.")

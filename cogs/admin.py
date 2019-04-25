@@ -49,7 +49,13 @@ class Admin(commands.Cog):
     @commands.command()
     @checks.is_mod()
     async def member(self, ctx, *, user):
-        """Shows information about the user."""
+        """Shows information about the guild member.
+
+        <user> can be either of the 3:
+
+        Tag
+        User ID
+        Username"""
         if ctx.message.mentions:
             mem = ctx.message.mentions[0]
         else:
@@ -114,6 +120,12 @@ class Admin(commands.Cog):
     @commands.command()
     @checks.is_mod()
     async def role(self, ctx, *, role):
+        """Shows information about a role.
+
+        <role> can be either:
+
+        Role ID
+        Role Name"""
         if isinstance(role, int):
             r = ctx.guild.get_role(role)
         else:
@@ -138,9 +150,10 @@ class Admin(commands.Cog):
     def is_me(self, message):
         return message.author == self.bot.user
 
-    @commands.command(hidden=True)
-    @checks.is_admin()
+    @commands.command()
+    @checks.is_mod()
     async def purge(self, ctx):
+        """Delete this bot's recent messages."""
         deleted = await ctx.channel.purge(limit=100, check=self.is_me)
         await ctx.send('Deleted {} message(s)'.format(len(deleted)))
 

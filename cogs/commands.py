@@ -22,7 +22,7 @@ class AFK(db.Table):
         super().__init__(table, column)
 
 
-class GeneralCommands(commands.Cog):
+class General(commands.Cog):
     """General commands."""
 
     def __init__(self, bot):
@@ -117,4 +117,4 @@ class GeneralCommands(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(GeneralCommands(bot))
+    bot.add_cog(General(bot))

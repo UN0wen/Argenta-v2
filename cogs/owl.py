@@ -53,7 +53,7 @@ class OWL(commands.Cog):
 
     @owl.command()
     async def live(self, ctx):
-        """Display the current total and map score as well as the map pool of the current match."""
+        """Display stats of the live match."""
         rsp = await self.get_json('live')
         match = rsp['data']['liveMatch']
         title = f"{match['competitors'][0]['name']} - {match['competitors'][1]['name']}"
