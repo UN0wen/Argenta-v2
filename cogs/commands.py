@@ -38,8 +38,7 @@ class GeneralCommands(commands.Cog):
             query = "SELECT * FROM users WHERE user_id = $1"
             row = await ctx.db.fetchrow(query, str(ctx.author.id))
             if row:
-                print(row['afk_message'])
-                if row['afk_message'] != '.':
+                if row['afk_message']:
                     await ctx.send(f"""Your afk message is: {row['afk_message']}.""")
                 else:
                     await ctx.send(f"You don't currently have an afk message.")
@@ -48,8 +47,12 @@ class GeneralCommands(commands.Cog):
         else:
             query = ("INSERT INTO users (user_id, afk_message) VALUES ($2, $1) " 
                      "ON CONFLICT (user_id) DO UPDATE SET afk_message = $1")
-            await ctx.db.execute(query, afk_msg, str(ctx.author.id))
-            await ctx.send("AFK message successfully updated.")
+            if afk_msg == ".":
+                await ctx.db.execute(query, None, str(ctx.author.id))
+                await ctx.send("Welcome back.")
+            else:
+                await ctx.db.execute(query, afk_msg, str(ctx.author.id))
+                await ctx.send("AFK message successfully updated.")
 
     @afk.before_invoke
     async def create_connection(self, ctx):
