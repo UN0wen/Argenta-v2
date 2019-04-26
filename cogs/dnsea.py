@@ -263,17 +263,13 @@ class DNSEA(commands.Cog):
             for child in content.children:
                 if child.name == 'p':
                     if child.string is None:
-                        for content in child.contents:
-                            if content.name == 'strong':
-                                string += f"**{content.string}**"
-                            else:
-                                string += content.string
+                        string = self.recur_addstr(child, string)
                     elif child.strong is not None:
                         string += f"**{child.strong.string}**"
                     else:
                         string += child.string.strip()
                 elif child.name == "hr":
-                    pass
+                    string += '------------------------------------------------------------'
                 elif isinstance(child, Comment):
                     pass
                 else:
@@ -281,12 +277,28 @@ class DNSEA(commands.Cog):
 
             with open(img_url, 'rb') as fp:
                 await ctx.send(file=discord.File(fp))
-                await asyncio.sleep(1)
 
             string = string.replace('\n\n\n\n', '\n\n')
             string = string.replace('\n\n\n', '\n')
-            await ctx.send(string)
+            if len(string) > 2000:
+                str_arr = string.splitlines(True)
+                firstpart, secondpart = str_arr[:len(str_arr) // 2], str_arr[len(str_arr) // 2:]
+                await ctx.send(" ".join(firstpart))
+                await ctx.send(" ".join(secondpart))
+            else:
+                await ctx.send(string)
             return True
+
+    def recur_addstr(self, root, string):
+        for content in root.contents:
+            if content.string is None:
+                string = self.recur_addstr(content, string)
+            elif content.name == 'strong':
+                string += f"**{content.string}**"
+            else:
+                string += content.string
+
+        return string
 
 def setup(bot):
     bot.add_cog(DNSEA(bot))
