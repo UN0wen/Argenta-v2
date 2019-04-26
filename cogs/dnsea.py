@@ -1,6 +1,9 @@
 from discord.ext import commands
 from cogs.utils import checks
+import discord
 import random
+import aiohttp
+from bs4 import BeautifulSoup, Comment
 import datetime
 import asyncio
 import logging
@@ -214,6 +217,76 @@ class DNSEA(commands.Cog):
                 chan = self.bot.get_channel(self.default_channel)
                 await chan.send(f"Hmph. {after.mention} has joined us.")
 
+    async def fetch(self, session, url):
+        async with session.get(url) as response:
+            return await response.text()
+
+    @commands.command()
+    async def announcements(self, ctx, next_id):
+        """Start grabbing announcements starting from ID next_id.
+
+        Announcements are checked every 5 minutes, starting with <next_id>."""
+        try:
+            while not self.bot.is_closed():
+                ret = await self.scrape(ctx, next_id)
+                if ret:
+                    log.info(f"Scraped {next_id}")
+                    next_id = str(int(next_id) + 1)
+                await asyncio.sleep(300)
+        except asyncio.CancelledError:
+            pass
+        except (OSError, discord.ConnectionClosed):
+            pass
+
+    async def scrape(self, ctx, id):
+        async with aiohttp.ClientSession() as session:
+            url1 = f"https://sea.dragonnest.com/news/notice/all/{id}"
+            html = await self.fetch(session, url1)
+            if html is None:
+                return None
+
+            soup = BeautifulSoup(html, 'lxml')
+            title = soup.find('th', attrs={'class': 'subject'})
+            date = soup.find('th', attrs={'class': 'date'})
+            content = soup.find('div', attrs={'class': 'cont'})
+            type = soup.find('th', attrs={'class': 'category'})
+
+            if "Patch" in title:
+                img_url = "cogs/imgs/gamepatch.png"
+            elif type == 'MAINT.':
+                img_url = "cogs/imgs/mainte.png"
+            else:
+                img_url = "cogs/imgs/notice.png"
+
+            string = f"**{title.string}**\n\n __{date.string}__\n"
+
+            for child in content.children:
+                if child.name == 'p':
+                    if child.string is None:
+                        for content in child.contents:
+                            if content.name == 'strong':
+                                string += f"**{content.string}**"
+                            else:
+                                string += content.string
+                    elif child.strong is not None:
+                        string += f"**{child.strong.string}**"
+                    else:
+                        string += child.string.strip()
+                elif child.name == "hr":
+                    pass
+                elif isinstance(child, Comment):
+                    pass
+                else:
+                    string += child
+
+            with open(img_url, 'rb') as fp:
+                await ctx.send(file=discord.File(fp))
+                await asyncio.sleep(1)
+
+            string = string.replace('\n\n\n\n', '\n\n')
+            string = string.replace('\n\n\n', '\n')
+            await ctx.send(string)
+            return True
 
 def setup(bot):
     bot.add_cog(DNSEA(bot))
