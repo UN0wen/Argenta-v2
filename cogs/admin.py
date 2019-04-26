@@ -6,6 +6,8 @@ import io
 import traceback
 import textwrap
 import config
+import subprocess
+import sys
 import json
 import requests
 
@@ -228,6 +230,25 @@ class Admin(commands.Cog):
             else:
                 self._last_result = ret
                 await ctx.send(f'```py\n{value}{ret}\n```')
+
+    @commands.command(pass_context=True, hidden=True, name='exec')
+    @commands.is_owner()
+    async def _exec(self, ctx, *, body: str):
+        body = self.cleanup_code(body)
+        stdout = io.StringIO()
+        try:
+            subprocess.run(body, stderr=subprocess.STDOUT, stdout=stdout, text=True)
+        except Exception as e:
+            value = stdout.getvalue()
+            await ctx.send(f'```py\n{value}{traceback.format_exc()}\n```')
+        else:
+            value = stdout.getvalue()
+            try:
+                await ctx.message.add_reaction('\u2705')
+            except:
+                pass
+
+            await ctx.send(f'```\n{value}\n```')
 
 
 def setup(bot):
