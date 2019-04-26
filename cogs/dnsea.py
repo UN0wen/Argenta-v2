@@ -265,7 +265,7 @@ class DNSEA(commands.Cog):
                     if child.string is None:
                         string = self.recur_addstr(child, string)
                     elif child.strong is not None:
-                        string += f"**{child.strong.string}**"
+                        string += f"**\n{child.strong.string}**"
                     else:
                         string += child.string.strip()
                 elif child.name == "hr":

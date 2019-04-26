@@ -66,7 +66,7 @@ class General(commands.Cog):
                 query = "SELECT * FROM users WHERE user_id = $1"
                 row = await db.fetchrow(query, str(member.id))
                 if row:
-                    if row['afk_message'] != '.':
+                    if row['afk_message']:
                         await message.channel.send(f"**@{member.display_name}** is currently AFK: {row['afk_message']}")
             await self.bot.pool.release(db)
 
