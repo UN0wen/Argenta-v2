@@ -10,6 +10,7 @@ from .embeds.timers import TimersEmbed
 from .embeds.baro_em import BaroEmbed
 from .embeds.invasion import InvasionsEmbed
 from .embeds.nightwave import NightwaveEmbed
+from .embeds.synthesis import SynthEmbed
 
 log = logging.getLogger(__name__)
 
@@ -30,6 +31,7 @@ class Warframe(commands.Cog):
         self.vallis_str = "vallisCycle"
         self.baro_str = "voidTrader"
         self.timers = ["cetus", "earth", "vallis"]
+        self.synthesis_str = "synthtargets"
         self._d_events = {"alerts": self.alerts_str,
                           "cetus": self.cetus_str,
                           "fleets": self.fleet_str,
@@ -39,16 +41,8 @@ class Warframe(commands.Cog):
                           "sortie": self.sortie_str,
                           "vallis": self.vallis_str,
                           "baro": self.baro_str,
-                          "nightwave": self.nightwave_str
-                            }
-        self._d_embeds = {"alerts": "get_alerts_embed",
-                          "timers": "get_timers_embed",
-                          "fleets": "get_fleets_embed",
-                          "fissures": "get_fissures_embed",
-                          "invasions": "get_invasions_embed",
-                          "sortie": "get_sortie_embed",
-                          "baro": "get_baro_embed",
-                          "nightwave": "get_nightwave_embed"
+                          "nightwave": self.nightwave_str,
+                          "synthesis": self.synthesis_str
                             }
 
     async def fetch_json(self, session, url):
@@ -63,8 +57,8 @@ class Warframe(commands.Cog):
                 json_rsp = await self.fetch_json(session, url)
                 return json_rsp
 
-    @commands.command()
-    async def wf(self, ctx, event):
+    @commands.group(pass_context=True)
+    async def wf(self, ctx):
         """Display an event in Warframe.
 
         Valid events are:
@@ -85,60 +79,61 @@ class Warframe(commands.Cog):
 
         Fleets: To be implemented.
         """
-        log.info(f"Wf event requested for: {event}.")
-        if event == 'sorties':
-            event = 'sortie'
-        embeds = await self.get_event_embed(event)
-        if isinstance(embeds, tuple):
-            for embed in embeds:
-                await ctx.send(embed=embed)
-        else:
-            await ctx.send(embed=embeds)
+        log.info(f"Wf event requested.")
 
-    async def get_event_embed(self, event):
-        """Get the embed for the the event_type wanted."""
-        if event in self._d_embeds:
-            return await getattr(self, self._d_embeds[event])(event)
-        return None
-
-    async def get_alerts_embed(self, event):
-        rsp = await self.get_json(event)
+    @wf.command()
+    async def alerts(self, ctx):
+        rsp = await self.get_json("alerts")
         e = AlertsEmbed(rsp)
-        return e
+        await ctx.send(embed=e)
 
-    async def get_fissures_embed(self, event):
-        rsp = await self.get_json(event)
+    @wf.command()
+    async def fissures(self, ctx):
+        rsp = await self.get_json("fissures")
         e = FissuresEmbed(rsp)
-        return e
+        await ctx.send(embed=e)
 
-    async def get_sortie_embed(self, event):
-        rsp = await self.get_json(event)
+    @wf.command()
+    async def sorties(self, ctx):
+        rsp = await self.get_json("sortie")
         e = SortieEmbed(rsp)
-        return e
+        await ctx.send(embed=e)
 
-    async def get_timers_embed(self, event):
-        if event == "timers":
+    @wf.command()
+    async def timers(self, ctx):
             cetus = await self.get_json(self.timers[0])
             earth = await self.get_json(self.timers[1])
             vallis = await self.get_json(self.timers[2])
             e = TimersEmbed(cetus, earth, vallis)
-            return e
+            await ctx.send(embed=e)
 
-    async def get_baro_embed(self, event):
-        rsp = await self.get_json(event)
+    @wf.command()
+    async def baro(self, ctx):
+        rsp = await self.get_json("baro")
         e = BaroEmbed(rsp)
-        return e
+        await ctx.send(embed=e)
 
-    async def get_invasions_embed(self, event):
-        rsp = await self.get_json(event)
+    @wf.command()
+    async def invasions(self, ctx):
+        rsp = await self.get_json("invasions")
         e = InvasionsEmbed(rsp)
-        return e
+        await ctx.send(embed=e)
 
-    async def get_nightwave_embed(self, event):
-        rsp = await self.get_json(event)
+    @wf.command()
+    async def nightwave(self, ctx):
+        rsp = await self.get_json("nightwave")
         e1 = NightwaveEmbed(rsp, daily=True)
         e2 = NightwaveEmbed(rsp, daily=False)
-        return e1, e2
+        await ctx.send(embed=e1)
+        await ctx.send(embed=e2)
+
+    @wf.command()
+    async def synthesis(self, ctx, *, name):
+        async with aiohttp.ClientSession() as session:
+            url = "https://api.warframestat.us/synthtargets"
+            rsp = await self.fetch_json(session, url)
+            e = SynthEmbed(rsp, name)
+            await ctx.send(embed=e)
 
 
 def setup(bot):

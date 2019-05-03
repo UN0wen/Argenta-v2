@@ -28,6 +28,7 @@ class General(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.table = AFK(table_name='Users')
+        self.mimic = {}
 
     @commands.group(name='afk', rest_is_raw=True)
     @checks.is_bot_channel()
@@ -60,6 +61,10 @@ class General(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        if message.author.bot:
+            return
+        if message.content[0] == self.bot.command_prefix:
+            return
         if message.mentions:
             db = await self.bot.pool.acquire()
             for member in message.mentions:
@@ -69,6 +74,24 @@ class General(commands.Cog):
                     if row['afk_message']:
                         await message.channel.send(f"**@{member.display_name}** is currently AFK: {row['afk_message']}")
             await self.bot.pool.release(db)
+        if message.author.id in self.mimic and self.mimic[message.author.id]:
+            channel = message.channel
+            msg_content = message.content
+            await message.delete()
+            await channel.send(msg_content)
+
+    @commands.command()
+    @checks.is_bot_channel()
+    async def mimic(self, ctx):
+        try:
+            self.mimic[ctx.author.id] = not self.mimic[ctx.author.id]
+        except KeyError:
+            self.mimic[ctx.author.id] = True
+
+        if self.mimic[ctx.author.id]:
+            await ctx.send('Mimic enabled.')
+        else:
+            await ctx.send('Mimic disabled.')
 
     @commands.command()
     @checks.is_in_channel(TEAQ_NSFW_ID)
