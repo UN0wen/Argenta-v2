@@ -2,6 +2,7 @@ from discord.ext import commands
 from cogs.utils import checks
 import logging
 import aiohttp
+import json
 
 from .embeds.alerts_em import AlertsEmbed
 from .embeds.fissures import FissuresEmbed
@@ -11,6 +12,7 @@ from .embeds.baro_em import BaroEmbed
 from .embeds.invasion import InvasionsEmbed
 from .embeds.nightwave import NightwaveEmbed
 from .embeds.synthesis import SynthEmbed
+from .embeds.market import MarketEmbed
 
 log = logging.getLogger(__name__)
 
@@ -20,30 +22,21 @@ api_endpoint = "https://api.warframestat.us/pc/"
 class Warframe(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.alerts_str = "alerts"
-        self.cetus_str = "cetusCycle"
-        self.fleet_str = "constructionProgress"
-        self.earth_str = "earthCycle"
-        self.fissures_str = "fissures"
-        self.invasion_str = "invasions"
-        self.nightwave_str = "nightwave"
-        self.sortie_str = "sortie"
-        self.vallis_str = "vallisCycle"
-        self.baro_str = "voidTrader"
         self.timers = ["cetus", "earth", "vallis"]
-        self.synthesis_str = "synthtargets"
-        self._d_events = {"alerts": self.alerts_str,
-                          "cetus": self.cetus_str,
-                          "fleets": self.fleet_str,
-                          "earth": self.earth_str,
-                          "fissures": self.fissures_str,
-                          "invasions": self.invasion_str,
-                          "sortie": self.sortie_str,
-                          "vallis": self.vallis_str,
-                          "baro": self.baro_str,
-                          "nightwave": self.nightwave_str,
-                          "synthesis": self.synthesis_str
+        self._d_events = {"alerts": "alerts",
+                          "cetus": "cetusCycle",
+                          "fleets": "constructionProgress",
+                          "earth": "earthCycle",
+                          "fissures": "fissures",
+                          "invasions": "invasions",
+                          "sortie": "sortie",
+                          "vallis": "vallisCycle",
+                          "baro": "voidTrader",
+                          "nightwave": "nightwave"
                             }
+
+        with open('cogs/wfmarket/itemdata.json', 'r') as fp:
+            self.market_data = json.load(fp)
 
     async def fetch_json(self, session, url):
         async with session.get(url) as response:
@@ -134,6 +127,26 @@ class Warframe(commands.Cog):
             rsp = await self.fetch_json(session, url)
             e = SynthEmbed(rsp, name)
             await ctx.send(embed=e)
+
+    @wf.command()
+    async def market(self, ctx, t, *, name):
+        """Searches wfmarket for current selling/trading data."""
+        name = name.title()
+        url_name = ""
+
+        if t not in ['buy', 'b', 'sell', 's']:
+            await ctx.send('Invalid opt. Must be buy/sell.')
+            return
+
+        for x in self.market_data:
+            if x['item_name'] == name:
+                url_name = x['url_name']
+
+        if url_name:
+            e = MarketEmbed(t, name, url_name)
+            await ctx.send(embed=e)
+        else:
+            await ctx.send(f"{name} not found.")
 
 
 def setup(bot):
