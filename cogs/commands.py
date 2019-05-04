@@ -63,6 +63,8 @@ class General(commands.Cog):
     async def on_message(self, message):
         if message.author.bot:
             return
+        if not message.content:
+            return
         if message.content[0] == self.bot.command_prefix:
             return
         if message.mentions:

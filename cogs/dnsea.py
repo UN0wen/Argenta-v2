@@ -10,6 +10,8 @@ import logging
 
 TH_id = 265816069556404224
 PT_id = 268739104999473155
+guild_id = 265816374566322176
+home_id = 563851034838040592
 
 log = logging.getLogger(__name__)
 
@@ -21,14 +23,13 @@ class DNSEA(commands.Cog):
         self.bot = bot
         self.TH_delete_time = datetime.timedelta(days=7)
         self.PT_delete_time = datetime.timedelta(days=1)
-        self.test_delete_time = datetime.timedelta(minutes=1)
         self.default_channel = 244790887509393410  # saint-haven
-        self.default_role = 264072124069707798
+        self.default_role = 264072124069707798 # citizen-of-lagendia
         self.snap_total = 0
         self.snap_list = []
         self.survivor_list = []
-    """Clean commands"""
 
+    """Clean commands"""
     @commands.group(pass_context=True)
     @checks.is_mod()
     async def clean(self, ctx):
@@ -220,6 +221,21 @@ class DNSEA(commands.Cog):
     async def fetch(self, session, url):
         async with session.get(url) as response:
             return await response.text()
+
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.channel.id == TH_id or message.channel.id == guild_id:
+            old_msg = await message.channel.history(before=message).get(author__name=message.author.name)
+            if old_msg:
+                if message.channel.id == guild_id:
+                    channel = message.guild.get_channel(home_id)
+                    await channel.send(f'Duplicate post by {message.author.mention} in {message.channel.mention}.')
+                else:
+                    channel = message.guild.get_channel(TH_id)
+                    await channel.send(f'{message.author.mention}\n Your previous posting at {old_msg.jump_url} '
+                                       f'will be deleted in 10 seconds.', delete_after=10)
+                    await asyncio.sleep(10)
+                    await old_msg.delete()
 
     @commands.command()
     async def announcements(self, ctx, next_id):
