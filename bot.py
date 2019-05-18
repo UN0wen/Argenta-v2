@@ -32,6 +32,7 @@ class Argenta(commands.Bot):
         self.del_msgs_on_command = True
         self.client_id = config.BOT_CLIENT_ID
         self.session = aiohttp.ClientSession(loop=self.loop)
+        self.owner_id = 92669124332785664
 
         for extension in initial_extensions:
             try:
@@ -70,11 +71,17 @@ class Argenta(commands.Bot):
     async def on_message(self, message):
         if message.author.bot:
             return
+        if isinstance(message.channel, discord.abc.PrivateChannel):
+            if not self.is_owner(message.author):
+                await self.process_dms(message)
         await self.process_commands(message)
 
     async def on_command(self, ctx):
         if self.del_msgs_on_command:
-            await ctx.message.delete()
+            try:
+                await ctx.message.delete()
+            except discord.errors.Forbidden:
+                pass
 
     async def process_commands(self, message):
         ctx = await self.get_context(message, cls=context.Context)
@@ -87,6 +94,10 @@ class Argenta(commands.Bot):
         finally:
             # Just in case we have any outstanding DB connections
             await ctx.release()
+
+    async def process_dms(self, message):
+        dm = self.get_user(self.owner_id).dm_channel
+        await dm.send(f"{message.author.name} sent a message: {message.clean_content}")
 
     async def close(self):
         await super().close()

@@ -99,5 +99,8 @@ def is_bot_channel():
         channel = ctx.channel
         if channel is None:
             return False
-        return channel.name.startswith("bb") or channel.name.startswith("bot")
+        try:
+            return channel.name.startswith("bb") or channel.name.startswith("bot")
+        except AttributeError:
+            return False
     return commands.check(predicate)

@@ -231,23 +231,14 @@ class Admin(commands.Cog):
                 self._last_result = ret
                 await ctx.send(f'```py\n{value}{ret}\n```')
 
-    @commands.command(pass_context=True, hidden=True, name='exec')
+    @commands.command(hidden=True)
     @commands.is_owner()
-    async def _exec(self, ctx, *, body: str):
-        body = self.cleanup_code(body)
-        try:
-            completed = subprocess.run(body, capture_output=True, text=True)
-        except Exception as e:
-            value = completed.stderr
-            await ctx.send(f'```py\n{value}{traceback.format_exc()}\n```')
-        else:
-            value = completed.stdout
-            try:
-                await ctx.message.add_reaction('\u2705')
-            except:
-                pass
-
-            await ctx.send(f'```\n{value}\n```')
+    async def dm(self, ctx, uid, *, msg):
+        user = self.bot.get_user(int(uid))
+        if not user:
+            await ctx.send(f'User with ID {uid} not found.')
+            return
+        await user.send(msg)
 
 
 def setup(bot):

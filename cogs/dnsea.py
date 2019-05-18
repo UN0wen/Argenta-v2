@@ -25,9 +25,14 @@ class DNSEA(commands.Cog):
         self.PT_delete_time = datetime.timedelta(days=1)
         self.default_channel = 244790887509393410  # saint-haven
         self.default_role = 264072124069707798 # citizen-of-lagendia
+        self.ancient = [260310485449048064, 454853119608619009, 352222376714567691]
         self.snap_total = 0
         self.snap_list = []
         self.survivor_list = []
+
+    def check_guild_permissions(self, author, perms, *, check=all):
+        resolved = author.guild_permissions
+        return check(getattr(resolved, name, None) == value for name, value in perms.items())
 
     """Clean commands"""
     @commands.group(pass_context=True)
@@ -224,18 +229,19 @@ class DNSEA(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.channel.id == TH_id or message.channel.id == guild_id:
-            old_msg = await message.channel.history(before=message).get(author__name=message.author.name)
-            if old_msg:
-                if message.channel.id == guild_id:
-                    channel = message.guild.get_channel(home_id)
-                    await channel.send(f'Duplicate post by {message.author.mention} in {message.channel.mention}.')
-                else:
-                    channel = message.guild.get_channel(TH_id)
-                    await channel.send(f'{message.author.mention}\n Your previous posting at {old_msg.jump_url} '
-                                       f'will be deleted in 10 seconds.', delete_after=10)
-                    await asyncio.sleep(10)
-                    await old_msg.delete()
+        if not self.check_guild_permissions(message.author, {'manage_channels': True}):
+            if message.channel.id == TH_id or message.channel.id == guild_id:
+                old_msg = await message.channel.history(before=message).get(author__name=message.author.name)
+                if old_msg:
+                    if message.channel.id == guild_id:
+                        channel = message.guild.get_channel(home_id)
+                        await channel.send(f'Duplicate post by {message.author.mention} in {message.channel.mention}.')
+                    else:
+                        channel = message.guild.get_channel(TH_id)
+                        await channel.send(f'{message.author.mention}\n Your previous posting at {old_msg.jump_url} '
+                                           f'will be deleted in 10 seconds.', delete_after=10)
+                        await asyncio.sleep(10)
+                        await old_msg.delete()
 
     @commands.command()
     async def announcements(self, ctx, next_id):
