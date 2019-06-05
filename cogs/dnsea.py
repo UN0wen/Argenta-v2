@@ -11,7 +11,7 @@ import logging
 TH_id = 265816069556404224
 PT_id = 268739104999473155
 guild_id = 265816374566322176
-home_id = 563851034838040592
+home_id = 452822629309612034
 
 log = logging.getLogger(__name__)
 
@@ -236,12 +236,17 @@ class DNSEA(commands.Cog):
                     if message.channel.id == guild_id:
                         channel = message.guild.get_channel(home_id)
                         await channel.send(f'Duplicate post by {message.author.mention} in {message.channel.mention}.')
+                        await channel.send(f'Old message: {old_msg.jump_url}.\n New message: {message.jump_url}')
                     else:
                         channel = message.guild.get_channel(TH_id)
                         await channel.send(f'{message.author.mention}\n Your previous posting at {old_msg.jump_url} '
                                            f'will be deleted in 10 seconds.', delete_after=10)
                         await asyncio.sleep(10)
                         await old_msg.delete()
+
+            if message.channel.id == TH_id and "service" in message.clean_content:
+                channel = message.guild.get_channel(home_id)
+                await channel.send(f'Service post by {message.author.mention} in {message.channel.mention}.\n URL:{message.jump_url}')
 
     @commands.command()
     async def announcements(self, ctx, next_id):
