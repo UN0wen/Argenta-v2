@@ -239,7 +239,7 @@ class DNSEA(commands.Cog):
                     if message.channel.id == guild_id:
                         channel = message.guild.get_channel(home_id)
                         await channel.send(f'Duplicate post by {message.author.mention} in {message.channel.mention}.')
-                        await channel.send(f'Old message: {old_msg.jump_url}.\n New message: {message.jump_url}')
+                        await channel.send(f'Old message: {old_msg.jump_url}.\nNew message: {message.jump_url}')
                     else:
                         channel = message.guild.get_channel(TH_id)
                         await channel.send(f'{message.author.mention}\n Your previous posting at {old_msg.jump_url} '
@@ -247,9 +247,9 @@ class DNSEA(commands.Cog):
                         await asyncio.sleep(10)
                         await old_msg.delete()
 
-            if message.channel.id == TH_id and "service" in message.clean_content:
+            if message.channel.id == TH_id and ("svc" in message.content or "service" in message.content):
                 channel = message.guild.get_channel(home_id)
-                await channel.send(f'Service post by {message.author.mention} in {message.channel.mention}.\n URL:{message.jump_url}')
+                await channel.send(f'Service post by {message.author.mention} in {message.channel.mention}.\nURL: {message.jump_url}')
 
     @commands.command()
     async def announcements(self, ctx, next_id):
