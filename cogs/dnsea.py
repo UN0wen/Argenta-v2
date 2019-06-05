@@ -31,8 +31,11 @@ class DNSEA(commands.Cog):
         self.survivor_list = []
 
     def check_guild_permissions(self, author, perms, *, check=all):
-        resolved = author.guild_permissions
-        return check(getattr(resolved, name, None) == value for name, value in perms.items())
+        try:
+            resolved = author.guild_permissions
+            return check(getattr(resolved, name, None) == value for name, value in perms.items())
+        except AttributeError:
+            return False
 
     """Clean commands"""
     @commands.group(pass_context=True)
