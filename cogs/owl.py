@@ -6,6 +6,7 @@ import time
 import logging
 import json
 import aiohttp
+from .embeds.argenta_em import ArgentaEmbed
 
 log = logging.getLogger(__name__)
 
@@ -78,7 +79,7 @@ class OWL(commands.Cog):
         for event in events:
             banner = event['eventBanner']['title']
             title = f"Overwatch League 2020 Season - {banner}"
-            e = discord.Embed(title=title, type='rich')
+            e = ArgentaEmbed(ctx.author, title=title, type='rich')
 
             thumb = event['eventBanner']['featuredImage']
             e.set_thumbnail(url=thumb)
@@ -113,7 +114,7 @@ class OWL(commands.Cog):
     #     match = rsp['data']['liveMatch']
     #     title = f"{match['competitors'][0]['name']} - {match['competitors'][1]['name']}"
 
-    #     e = discord.Embed(title=title, type="rich")
+    #     e = ArgentaEmbed(title=title, type="rich")
     #     e.add_field(
     #         name="Score", value=f"{match['scores'][0]['value']} - {match['scores'][1]['value']}", inline=False)
     #     if match['scores'][0]['value'] > match['scores'][1]['value']:
@@ -152,7 +153,7 @@ class OWL(commands.Cog):
     #         await ctx.send("There are no Overwatch League matches today.")
     #         return
     #     title = f"Overwatch League 2019 Season - {today}"
-    #     e = discord.Embed(title=title, type='rich')
+    #     e = ArgentaEmbed(title=title, type='rich')
 
     #     thumb = "https://i.redd.it/2918l9dw7og21.jpg"
     #     e.set_thumbnail(url=thumb)

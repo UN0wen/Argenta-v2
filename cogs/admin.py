@@ -10,6 +10,7 @@ import subprocess
 import sys
 import json
 import requests
+from .embeds.argenta_em import ArgentaEmbed
 
 
 class Admin(commands.Cog):
@@ -78,7 +79,7 @@ class Admin(commands.Cog):
 
         mem_roles = mem.roles[1:]
 
-        e = discord.Embed(title=uname)
+        e = ArgentaEmbed(ctx.author, title=uname)
 
         e.colour = discord.Colour.teal()
         e.add_field(name="User ID", value=mem.id, inline=False)
@@ -111,7 +112,7 @@ class Admin(commands.Cog):
         uname = f"{user.name}#{user.discriminator}"
         created_date_str = user.created_at.strftime("%d/%m/%Y, %H:%M:%S")
 
-        e = discord.Embed(title=uname)
+        e = ArgentaEmbed(ctx.author, title=uname)
         e.colour = discord.Colour.teal()
         e.add_field(name="User ID", value=user.id, inline=False)
         e.add_field(name="Bot", value=user.bot, inline=False)
@@ -139,7 +140,7 @@ class Admin(commands.Cog):
 
         created_date_str = r.created_at.strftime("%d/%m/%Y, %H:%M:%S")
 
-        e = discord.Embed(title=r.name)
+        e = ArgentaEmbed(ctx.author, title=r.name)
         e.colour = discord.Colour.teal()
         e.add_field(name="Role ID", value=r.id, inline=False)
         e.add_field(name="Colour", value=r.colour, inline=False)

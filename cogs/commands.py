@@ -5,6 +5,7 @@ import nhentai
 import random
 import logging
 from nhentai import errors
+from .embeds.argenta_em import ArgentaEmbed
 
 TEAQ_ID = 152373455529050113
 TEAQ_NSFW_ID = 335770969362792448
@@ -31,7 +32,7 @@ class General(commands.Cog):
         self.mimic = {}
 
     @commands.group(name='afk', rest_is_raw=True)
-    @checks.is_bot_channel()
+    #@checks.is_bot_channel()
     async def afk(self, ctx, *, afk_msg):
         """Set afk message. Set to . to cancel."""
         afk_msg = afk_msg[1:]
@@ -54,6 +55,14 @@ class General(commands.Cog):
             else:
                 await ctx.db.execute(query, afk_msg, str(ctx.author.id))
                 await ctx.send("AFK message successfully updated.")
+    
+    @commands.command(hidden=True)
+    @checks.is_mod()
+    async def afkdelete(self, ctx, uid):
+        query = ("INSERT INTO users (user_id, afk_message) VALUES ($2, $1) " 
+                     "ON CONFLICT (user_id) DO UPDATE SET afk_message = $1")
+        await ctx.db.execute(query, None, uid)
+        await ctx.send(f"AFK message of user {uid} deleted")
 
     @afk.before_invoke
     async def create_connection(self, ctx):
@@ -103,7 +112,7 @@ class General(commands.Cog):
         try:
             d = nhentai.Doujinshi(itag)
             url = f"http://nhentai.net/g/{tag}"
-            e = discord.Embed(title=d.name, url=url)
+            e = ArgentaEmbed(ctx.author, title=d.name, url=url)
             e.add_field(name="Magic number", value=d.magic)
             e.add_field(name="Tags", value=', '.join(d.tags))
             e.set_image(url=d.cover)
@@ -126,7 +135,7 @@ class General(commands.Cog):
         try:
             d = random.choice(results)
             url = f"http://nhentai.net/g/{d.magic}"
-            e = discord.Embed(title=d.name, url=url)
+            e = ArgentaEmbed(ctx.author, title=d.name, url=url)
             e.add_field(name="Magic number", value=d.magic)
             e.add_field(name="Tags", value=', '.join(d.tags))
             e.set_image(url=d.cover)
