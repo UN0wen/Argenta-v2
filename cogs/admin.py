@@ -240,6 +240,21 @@ class Admin(commands.Cog):
             return
         await user.send(msg)
 
+    @commands.command(hidden=True)
+    @commands.is_owner()
+    async def reload(self, ctx, cog):
+        try:
+            self.bot.unload_extension(cog)
+        except Exception as e:
+            await ctx.send(f"Extension {cog} not loaded.")
 
+        try:
+            self.bot.load_extension(cog)
+            print(f"Loaded {cog}")
+            await ctx.send(f"Loaded {cog}.")
+        except Exception as e:
+            print(f'Failed to load extension {cog}.', file=sys.stderr)
+            traceback.print_exc()
+    
 def setup(bot):
     bot.add_cog(Admin(bot))
