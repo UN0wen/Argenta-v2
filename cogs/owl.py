@@ -77,11 +77,13 @@ class OWL(commands.Cog):
         rsp = await self.get_json(int(week))
         events = rsp['content']['tableData']['events']
         for event in events:
-            banner = event['eventBanner']['title']
-            title = f"Overwatch League 2020 Season - {banner}"
+            host = event['eventBanner']['hostingTeam']
+            venue = event['eventBanner']['venue']['name']
+            host_team = host['longName'][0] +" "+ host['longName'][1]            
+            title = f"Overwatch League 2020 Season - {host_team} Homestand - {venue}"
             e = ArgentaEmbed(ctx.author, title=title, type='rich')
 
-            thumb = event['eventBanner']['featuredImage']
+            thumb = host['teamLogo'][0]['teamIconPng']['url']
             e.set_thumbnail(url=thumb)
 
             e.url = "https://gigabra.in"
