@@ -1,10 +1,8 @@
 from discord.ext import commands
 from cogs.utils import checks, db
 import discord
-import nhentai
 import random
 import logging
-from nhentai import errors
 from .embeds.argenta_em import ArgentaEmbed
 
 TEAQ_ID = 152373455529050113
@@ -13,7 +11,7 @@ TEAQ_NSFW_ID = 335770969362792448
 log = logging.getLogger(__name__)
 
 afk_cache = {}
-
+afk_blacklist = [526456830193434624, 352843237062606848]
 
 class AFK(db.Table):
     def __init__(self, table_name=None):
@@ -76,6 +74,8 @@ class General(commands.Cog):
             return
         if message.content[0] == self.bot.command_prefix:
             return
+        if message.channel.id in afk_blacklist:
+            return
         if message.mentions:
             db = await self.bot.pool.acquire()
             for member in message.mentions:
@@ -104,51 +104,7 @@ class General(commands.Cog):
         else:
             await ctx.send('Mimic disabled.')
 
-    @commands.command()
-    @checks.is_in_channel(TEAQ_NSFW_ID)
-    async def nh(self, ctx, tag):
-        """Displays the nhentai doujin with id <tag>"""
-        itag = int(tag)
-        try:
-            d = nhentai.Doujinshi(itag)
-            url = f"http://nhentai.net/g/{tag}"
-            e = ArgentaEmbed(ctx.author, title=d.name, url=url)
-            e.add_field(name="Magic number", value=d.magic)
-            e.add_field(name="Tags", value=', '.join(d.tags))
-            e.set_image(url=d.cover)
-            e.colour = discord.Colour.teal()
-            log.info("Doujin requested.")
-            await ctx.send(embed=e)
-        except errors.DoujinshiNotFound:
-            log.info(f"Requested: {tag}. Doujin not found.")
-            await ctx.send("Doujinshi not found.")
-
-    @commands.command()
-    @checks.is_in_channel(TEAQ_NSFW_ID)
-    async def nhsearch(self, ctx, *, query):
-        """Issues a search to nhentai with <query>.
-        Displays a random doujin selected from the search results."""
-        page = random.randint(1, 10)
-        results = [d for d in nhentai.search(query, page)]
-        if not results:
-            results = [d for d in nhentai.search(query, 1)]
-        try:
-            d = random.choice(results)
-            url = f"http://nhentai.net/g/{d.magic}"
-            e = ArgentaEmbed(ctx.author, title=d.name, url=url)
-            e.add_field(name="Magic number", value=d.magic)
-            e.add_field(name="Tags", value=', '.join(d.tags))
-            e.set_image(url=d.cover)
-            e.colour = discord.Colour.teal()
-            log.info("Doujin search requested.")
-            await ctx.send(embed=e)
-        except errors.DoujinshiNotFound:
-            log.info(f"Requested: {query}. Doujin not found.")
-            await ctx.send(f"Doujinshi not found with query {query}")
-        except IndexError:
-            log.info(f"Requested: {query}. Doujin not found.")
-            await ctx.send(f"Doujinshi not found with query {query}")
-
+    
 
 def setup(bot):
     bot.add_cog(General(bot))

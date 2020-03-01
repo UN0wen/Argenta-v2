@@ -6,13 +6,14 @@ import time
 import logging
 import json
 import aiohttp
+import pendulum
 from .embeds.argenta_em import ArgentaEmbed
 
 log = logging.getLogger(__name__)
 
 api_endpoint = "https://api.overwatchleague.com/"
 
-la_tz = datetime.timezone(-datetime.timedelta(hours=7))
+la_tz = pendulum.timezone("America/Los_Angeles")
 
 class OWL(commands.Cog):
     def __init__(self, bot):

@@ -21,6 +21,7 @@ initial_extensions = (
     'cogs.warframe',
     'cogs.admin',
     'cogs.owl',
+    'cogs.nsfw',
 )
 
 
