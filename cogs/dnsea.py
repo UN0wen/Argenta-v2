@@ -12,6 +12,7 @@ TH_id = 265816069556404224
 PT_id = 268739104999473155
 guild_id = 265816374566322176
 home_id = 452822629309612034
+DNSEA_id = 244790887509393410
 
 log = logging.getLogger(__name__)
 
@@ -29,6 +30,25 @@ class DNSEA(commands.Cog):
         self.snap_total = 0
         self.snap_list = []
         self.survivor_list = []
+
+    @commands.command()
+    @commands.is_owner()
+    async def nuke(self, ctx):
+        farewell_msg = ''' '''
+        guild_obj = self.bot.get_guild(DNSEA_id)
+        announcements = self.bot.get_channel(342734282818846730)
+        rules = self.bot.get_channel(264048542413225984)
+        basement = self.bot.get_channel(265813441531346944)
+        cassius = self.bot.get_channel(452822629309612034)
+        log_cat = guild_obj.get_channel(541135693460537344).channels
+        '''
+        await rules.delete()
+        await basement.delete()
+        await cassius.delete()
+        for channel in log_cat:
+            await channel.delete()
+        '''
+        await announcements.send(farewell_msg)
 
     def check_guild_permissions(self, author, perms, *, check=all):
         try:
