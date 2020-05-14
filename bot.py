@@ -22,6 +22,7 @@ initial_extensions = (
     'cogs.admin',
     'cogs.owl',
     'cogs.nsfw',
+    'cogs.kpop',
 )
 
 
@@ -30,12 +31,12 @@ class Argenta(commands.Bot):
         super().__init__(command_prefix=config.BOT_PREFIX, description=description,
                          pm_help=None, help_attrs=dict(hidden=True), fetch_offline_members=False)
 
-        self.del_msgs_on_command = True
+        self.del_msgs_on_command = config.DELMSGONCMD
         self.client_id = config.BOT_CLIENT_ID
         self.session = aiohttp.ClientSession(loop=self.loop)
         self.owner_id = 92669124332785664
 
-        for extension in initial_extensions:
+        for extension in initial_extensions: 
             try:
                 self.load_extension(extension)
                 print(f"Loaded {extension}")

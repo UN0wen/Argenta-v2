@@ -6,14 +6,14 @@ import time
 import logging
 import json
 import aiohttp
-import pendulum
+import pytz
 from .embeds.argenta_em import ArgentaEmbed
 
 log = logging.getLogger(__name__)
 
 api_endpoint = "https://api.overwatchleague.com/"
 
-la_tz = pendulum.timezone("America/Los_Angeles")
+la_tz = pytz.timezone("America/Los_Angeles")
 
 class OWL(commands.Cog):
     def __init__(self, bot):
@@ -92,7 +92,7 @@ class OWL(commands.Cog):
             for match in event["matches"]:
                 timestamp = int(match['startDate'])/1000
                 dt = datetime.datetime.fromtimestamp(timestamp, tz=la_tz)
-                name = f"{dt.strftime('%A, %B %-d, %I:%M %p')} PST"
+                name = f"{dt.strftime('%A, %B %d, %I:%M %p')} PST"
                 comp = match['competitors'][0]['name'], match['competitors'][1]['name']
 
                 if match['status'] == "CONCLUDED":

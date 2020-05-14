@@ -42,6 +42,7 @@ def get_javlibrary_url(vid_id):
     vid_id = check_vid_id_has_dash(vid_id.upper())
     try:
         search_url = "http://www.javlibrary.com/en/vl_searchbyid.php?keyword=" + vid_id
+        print(f"Searching for: {search_url}")
         html = get_url_response(search_url, vid_id)
 
         # we didn't get a valid response

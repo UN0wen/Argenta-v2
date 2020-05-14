@@ -1,0 +1,10 @@
+.dockerignore
+.git*
+.vscode
+Dockerfile
+docker-compose.yml
+README.md
+*.pyc
+*.pyo
+*.pyd
+__pycache__
