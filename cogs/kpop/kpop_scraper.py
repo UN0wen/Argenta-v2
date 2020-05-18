@@ -85,6 +85,36 @@ class RedditScraper:
         with open("osts.json", "w") as f:
             f.write(json.dumps(ost_data, indent=2, cls=ScheduleEncoder))
 
+    # get new data as dict for the bot to update
+    def get_new_data(self):
+        ost_data = []
+        release_data = []
+
+        # accumulate data
+        for y in self.years:
+            if y > self.current_year:
+                break
+            elif y < self.current_year:
+                continue
+            for m in self.months:
+                if m < self.current_month:
+                    continue
+                mn = month_name[m].lower()
+                try:
+                    html = self.get_page(mn, y)
+                    print(mn, y)
+                    release, ost = self.parse_page(html, m, y)
+                    release_data.append(release)
+                    ost_data.append(ost)
+                    sleep(.5)
+                except Exception as err:
+                    print(err)
+                    break
+
+        # dump data
+        print(ost_data)
+        print(release_data)
+    
     def get_page(self, month, year):
         url = f"upcoming-releases/{year}/{month}"
         html = self.subreddit.wiki[url].content_html
@@ -182,7 +212,7 @@ class RedditScraper:
             ost_data = json.load(f)
             with open("osts.csv", "w",  encoding="utf-8", newline='') as f2:
                 writer = csv.DictWriter(f2, ost_fields)
-                writer.writeheader()
+                writer.writeheader() 
                 for month in ost_data:
                     if month:
                         for entry in month:
@@ -237,9 +267,9 @@ class SpotifyScraper:
         return self.spotify.track(track)["album"]
 
 if __name__ == "__main__":
-    kpop = SpotifyScraper()
+    kpop = RedditScraper()
 
-    kpop.get_all_release_data()
+    kpop.get_new_data()
     # track = kpop.get_track("https://play.spotify.com/track/4hznPzvJbEJxcxZA6NbsWx")
     # with open("temp.json", "w", encoding="utf8") as f:
     #     json.dump(track, f, indent=2)
