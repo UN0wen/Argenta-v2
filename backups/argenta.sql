@@ -59,25 +59,25 @@ COPY public.users (user_id, afk_message) FROM stdin;
 296290427307425792	https://tenor.com/view/maki-nishikino-blush-love-live-gif-5438490
 212193185982709761	<.>
 549495111248117760	https://imgur.com/2jccsGF
-324199981735084032	DM if really important, not reading tags
 124919896567054337	\N
 250337724001681410	https://i.imgflip.com/36ma1w.gif
 260067890806390784	https://tenor.com/bfIWc.gif
 388927156417331200	AFK FOREVER  ( ͡° ͜ʖ ͡°)
 186268942887550977	https://cdn.discordapp.com/attachments/644173142549463041/648714673616715786/unknown.png
-475222444907560972	Thank for coming my wedding\nhttps://cdn.discordapp.com/attachments/640574595258384423/696357541826920458/DN_2020-04-05_21-41-41_Sun.png
+597375701628485634	\N
 325582117079613441	https://cdn.discordapp.com/attachments/265815224114741268/632522935697014785/8c30f9ae1b4f8aca1ba0a08aa41aa29ba593182fccf1f4e2a941efebfab3ebc1.png
 553199800049205296	\N
 531922836915224584	https://www.youtube.com/watch?v=N8j6U2z94wA
 344669179829288961	https://i.pinimg.com/originals/6c/f4/a3/6cf4a35ff341044e0ef2acf09f128d5b.gif
 184353047730716672	https://pm1.narvii.com/7408/08a9f1733cff57d7c5398cff7242e05ae13bede9r1-1500-785v2_hq.jpg
+324199981735084032	https://cdn.discordapp.com/attachments/566575807582044162/711207972788895799/DN_2020-05-15_01-01-02_Fri.jpg
 236457905858150400	o(-<
-208782729565700107	https://cdn.discordapp.com/attachments/265816937265758209/687896201248374821/j7bdo.mp4
+300237849268322305	\N
 100223894438301696	\N
 305330737287004160	https://media.discordapp.net/attachments/464663685634195469/641985268886536193/IMG_20191102_190733.jpg
 423433870571208705	https://media.giphy.com/media/UWzK5hAREuKoJt9Vai/giphy.gif
 286900099123118081	https://media.tenor.com/images/0971bb006399f91fac6f79bd5c191f33/tenor.gif
-300237849268322305	50k lesgo https://cdn.discordapp.com/attachments/623945244991291393/704598405678235711/unknown.png
+229793785972916225	https://media.discordapp.net/attachments/641453999954067466/712239066133037116/hacdog.png?width=826&height=656
 504708016659103757	https://cdn.discordapp.com/attachments/265815224114741268/628510323057491968/DN_2019-10-01_16-29-01_Tue_-_Copy.png
 578372583939112960	https://imgur.com/qXBIkP0
 284796716669206538	Ceeeeeeeeeeeeeeeeeeeeeeeb
@@ -98,13 +98,13 @@ COPY public.users (user_id, afk_message) FROM stdin;
 328462720070582272	https://cdn.discordapp.com/attachments/118217408853835785/556043716473782272/tenor.gif
 297372683044257793	https://imgur.com/MX6XlAt
 224044342975660034	\N
-229793785972916225	https://cdn.discordapp.com/attachments/409397220459413515/680782146406711309/unknown.png
 220950052925865985	\N
 159317182835064833	\N
 222080822365257728	\N
 250176185768607744	\N
 193450996112949248	https://cdn.discordapp.com/attachments/530738314647437333/663494798618918913/Hi1gif.gif
-597375701628485634	https://imgur.com/Zfn2qk6
+475222444907560972	https://cdn.discordapp.com/attachments/640574595258384423/712709277466492988/tenor.gif
+208782729565700107	https://cdn.discordapp.com/attachments/643132955170177054/710615868501000242/video0.mp4
 227375126725787648	https://tenor.com/view/arknights-pramanix-fluffy-cute-bite-gif-16873917
 356668402942607364	https://cdn.discordapp.com/attachments/590197224781250608/659475591069827072/IndolentSpiffyBongo-size_restricted.gif
 423784947212484629	https://tenor.com/view/dragon-nest-filthy-frank-trash-meme-know-your-fucking-place-gif-15772338
@@ -112,6 +112,7 @@ COPY public.users (user_id, afk_message) FROM stdin;
 440764140500418572	https://media.giphy.com/media/UTLYdtdfh3MrcqYiZH/giphy.gif
 269005895743176705	https://thumbs.gfycat.com/DependentMiserableArrowcrab-size_restricted.gif
 433478125528154114	popcorn https://cdn.discordapp.com/emojis/707413767637696632.png?v=1
+441482720153960449	https://cdn.discordapp.com/attachments/689732683534041251/712261089970356304/SadPepeDance.gif
 375497412422139905	https://cdn.discordapp.com/attachments/672702363848540190/684710156348817408/FB_IMG_1566418405233.jpg
 227090785135362048	`DEJA VU!` https://media.giphy.com/media/YrqswRfkK9HbJtkCS5/giphy.gif
 431658444010029077	https://media.discordapp.net/attachments/265815224114741268/688284827899658361/Reina.gif
