@@ -8,9 +8,9 @@ cogs/__pycache__/
 cogs/utils/__pycache__/
 argenta.log
 /ArgentaV2/
-config.py
 *#*#
 *~
 *.pyc
 *.pyo
 *.env
+*.bak

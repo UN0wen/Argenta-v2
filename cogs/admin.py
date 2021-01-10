@@ -40,14 +40,16 @@ class Admin(commands.Cog):
         if sts:
             await ctx.bot.change_presence(status=sts)
 
-    @commands.command(hidden=True)
-    @commands.is_owner()
-    async def delmsgsoncmd(self, ctx):
-        ctx.bot.del_msgs_on_command = not ctx.bot.del_msgs_on_command
-        if ctx.bot.del_msgs_on_command:
-            await ctx.send("Now deleting command invocation messages.")
-        else:
-            await ctx.send("Stopped deleting command invocation messages.")
+
+    # disable this since replies have arrived
+    # @commands.command(hidden=True)
+    # @commands.is_owner()
+    # async def delmsgsoncmd(self, ctx):
+    #     ctx.bot.del_msgs_on_command = not ctx.bot.del_msgs_on_command
+    #     if ctx.bot.del_msgs_on_command:
+    #         await ctx.send("Now deleting command invocation messages.")
+    #     else:
+    #         await ctx.send("Stopped deleting command invocation messages.")
 
     @commands.command()
     @checks.is_mod()
@@ -69,7 +71,7 @@ class Admin(commands.Cog):
                 mem = ctx.guild.get_member_named(user)
 
         if mem is None:
-            await ctx.send("Member not found.")
+            await ctx.reply("Member not found.")
             return
 
         url = mem.avatar_url
@@ -92,7 +94,7 @@ class Admin(commands.Cog):
 
         e.add_field(name="Status", value=mem.status, inline=False)
         e.set_thumbnail(url=url)
-        await ctx.send(embed=e)
+        await ctx.reply(embed=e)
 
     @commands.command()
     @checks.is_mod()
@@ -101,11 +103,11 @@ class Admin(commands.Cog):
         try:
             user = self.bot.get_user(int(uid))
         except ValueError:
-            await ctx.send(f"Invalid argument.")
+            await ctx.reply(f"Invalid argument.")
             return
 
         if user is None:
-            await ctx.send(f"User with id {uid} not found.")
+            await ctx.reply(f"User with id {uid} not found.")
             return
 
         url = user.avatar_url
@@ -118,7 +120,7 @@ class Admin(commands.Cog):
         e.add_field(name="Bot", value=user.bot, inline=False)
         e.add_field(name="Account creation date", value=created_date_str, inline=False)
         e.set_thumbnail(url=url)
-        await ctx.send(embed=e)
+        await ctx.reply(embed=e)
 
     @commands.command()
     @checks.is_mod()
@@ -135,7 +137,7 @@ class Admin(commands.Cog):
             r = discord.utils.find(lambda m: m.name == role, ctx.guild.roles)
 
         if r is None:
-            await ctx.send("Role not found.")
+            await ctx.reply("Role not found.")
             return
 
         created_date_str = r.created_at.strftime("%d/%m/%Y, %H:%M:%S")
@@ -148,7 +150,7 @@ class Admin(commands.Cog):
         e.add_field(name="Mentionable", value=r.mentionable, inline=False)
         e.add_field(name="Role creation date", value=created_date_str, inline=False)
 
-        await ctx.send(embed=e)
+        await ctx.reply(embed=e)
 
     def is_me(self, message):
         return message.author == self.bot.user
@@ -237,7 +239,7 @@ class Admin(commands.Cog):
     async def dm(self, ctx, uid, *, msg):
         user = self.bot.get_user(int(uid))
         if not user:
-            await ctx.send(f'User with ID {uid} not found.')
+            await ctx.reply(f'User with ID {uid} not found.')
             return
         await user.send(msg)
 
@@ -247,12 +249,12 @@ class Admin(commands.Cog):
         try:
             self.bot.unload_extension(cog)
         except Exception as e:
-            await ctx.send(f"Extension {cog} not loaded.")
+            await ctx.reply(f"Extension {cog} not loaded.")
 
         try:
             self.bot.load_extension(cog)
             print(f"Loaded {cog}")
-            await ctx.send(f"Loaded {cog}.")
+            await ctx.reply(f"Loaded {cog}.")
         except Exception as e:
             print(f'Failed to load extension {cog}.', file=sys.stderr)
             traceback.print_exc()

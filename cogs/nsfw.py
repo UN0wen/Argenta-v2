@@ -1,11 +1,11 @@
 from discord.ext import commands
-from cogs.utils import checks, db, javlibrary
+from cogs.utils import checks, db
+from cogs.libs import javlibrary
 import discord
 import nhentai
 import random
 import logging
 import functools
-from nhentai import errors
 from cogs.embeds.argenta_em import ArgentaEmbed
 
 TEAQ_ID = 152373455529050113
@@ -25,23 +25,23 @@ class NSFW(commands.Cog):
         """Displays the information for a JAV.
         Valid query search term is ABCD-1234 or ABCD 1234"""
         javlib = functools.partial(javlibrary.get_javlibrary, query)
-        d = await self.bot.loop.run_in_executor(None, javlib)
-        if not d:
-            await ctx.send(f"Video with ID {query} not found.")
+        doujin = await self.bot.loop.run_in_executor(None, javlib)
+        if not doujin:
+            await ctx.reply(f"Video with ID {query} not found.")
             log.info(f"Requested {query}, not found.")
             return
         
-        e = ArgentaEmbed(ctx.author, title=d['title'])
-        e.add_field(name="Actresses", value=d['actresses'])
-        e.add_field(name="Genres", value=d['genre'])
-        length = d["length"] + " minutes"
+        e = ArgentaEmbed(ctx.author, title=doujin['title'])
+        e.add_field(name="Actresses", value=doujin['actresses'])
+        e.add_field(name="Genres", value=doujin['genre'])
+        length = doujin["length"] + " minutes"
         e.add_field(name="Length", value=length)
-        e.add_field(name='Release Date', value=d['release_date'])
-        e.add_field(name="Label", value=d["label"])
-        img_url = "https:" + d['cover_url'] 
+        e.add_field(name='Release Date', value=doujin['release_date'])
+        e.add_field(name="Label", value=doujin["label"])
+        img_url = "https:" + doujin['cover_url'] 
         e.set_image(url=img_url)
         e.colour = discord.Colour.dark_teal()
-        await ctx.send(embed=e)
+        await ctx.reply(embed=e)
         log.info(f"JAV with ID {query} requested.")
         
     @commands.command()
@@ -50,18 +50,18 @@ class NSFW(commands.Cog):
         """Displays the nhentai doujin with id <tag>"""
         itag = int(tag)
         try:
-            d = nhentai.Doujinshi(itag)
-            url = f"http://nhentai.net/g/{tag}"
-            e = ArgentaEmbed(ctx.author, title=d.name, url=url)
-            e.add_field(name="Magic number", value=d.magic)
-            e.add_field(name="Tags", value=', '.join(d.tags))
-            e.set_image(url=d.cover)
+            doujin = nhentai.get_doujin(itag)
+            e = ArgentaEmbed(ctx.author, title=doujin.titles["english"], url=doujin.url)
+            e.add_field(name="Magic number", value=doujin.id)
+            e.add_field(name="Tags", value=', '.join([i.name for i in doujin.tags]))
+            e.set_image(url=doujin.cover)
             e.colour = discord.Colour.teal()
             log.info("Doujin requested.")
-            await ctx.send(embed=e)
-        except errors.DoujinshiNotFound:
+            print(e)
+            await ctx.reply(embed=e)
+        except ValueError:
             log.info(f"Requested: {tag}. Doujin not found.")
-            await ctx.send("Doujinshi not found.")
+            await ctx.reply("Doujinshi not found.")
 
     @commands.command()
     @checks.is_in_channel(TEAQ_NSFW_ID)
@@ -69,25 +69,24 @@ class NSFW(commands.Cog):
         """Issues a search to nhentai with <query>.
         Displays a random doujin selected from the search results."""
         page = random.randint(1, 10)
-        results = [d for d in nhentai.search(query, page)]
+        results = nhentai.search(query, page)
         if not results:
-            results = [d for d in nhentai.search(query, 1)]
+            results = nhentai.search(query, 1)
         try:
-            d = random.choice(results)
-            url = f"http://nhentai.net/g/{d.magic}"
-            e = ArgentaEmbed(ctx.author, title=d.name, url=url)
-            e.add_field(name="Magic number", value=d.magic)
-            e.add_field(name="Tags", value=', '.join(d.tags))
-            e.set_image(url=d.cover)
+            doujin = random.choice(results)
+            e = ArgentaEmbed(ctx.author, title=doujin.titles['english'], url=doujin.url)
+            e.add_field(name="Magic number", value=doujin.id)
+            e.add_field(name="Tags", value=', '.join([i.name for i in doujin.tags]))
+            e.set_image(url=doujin.cover)
             e.colour = discord.Colour.teal()
             log.info("Doujin search requested.")
-            await ctx.send(embed=e)
-        except errors.DoujinshiNotFound:
+            await ctx.reply(embed=e)
+        except ValueError:
             log.info(f"Requested: {query}. Doujin not found.")
-            await ctx.send(f"Doujinshi not found with query {query}")
+            await ctx.reply(f"Doujinshi not found with query {query}")
         except IndexError:
             log.info(f"Requested: {query}. Doujin not found.")
-            await ctx.send(f"Doujinshi not found with query {query}")
+            await ctx.reply(f"Doujinshi not found with query {query}")
 
 def setup(bot):
     bot.add_cog(NSFW(bot))

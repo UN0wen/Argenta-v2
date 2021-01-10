@@ -49,7 +49,7 @@ def run_bot():
     log = logging.getLogger()
 
     try:
-        pool = loop.run_until_complete(db.create_pool(config.POSTGRES_URI))
+        pool = loop.run_until_complete(db.create_pool(config.DATABASE_URL))
     except Exception as e:
         log.exception('Could not set up PostgreSQL. Exiting.')
         return

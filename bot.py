@@ -53,7 +53,7 @@ class Argenta(commands.Bot):
         elif isinstance(error, commands.DisabledCommand):
             await ctx.author.send('Sorry. This command is disabled and cannot be used.')
         elif isinstance(error, commands.CheckFailure):
-            await ctx.send("Sorry, you don't have the necessary permissions to use this command.", delete_after=3)
+            await ctx.reply("Sorry, you don't have the necessary permissions to use this command.", delete_after=3)
         elif isinstance(error, commands.CommandInvokeError):
             original = error.original
             if not isinstance(original, discord.HTTPException):
@@ -61,7 +61,7 @@ class Argenta(commands.Bot):
                 traceback.print_tb(original.__traceback__)
                 print(f'{original.__class__.__name__}: {original}', file=sys.stderr)
         elif isinstance(error, commands.ArgumentParsingError):
-            await ctx.send(error)
+            await ctx.reply(error)
 
     async def on_ready(self):
         if not hasattr(self, 'uptime'):

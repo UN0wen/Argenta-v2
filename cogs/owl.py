@@ -66,7 +66,7 @@ class OWL(commands.Cog):
     async def owl(self, ctx):
         """Display the status of Overwatch League matches."""
         if ctx.invoked_subcommand is None:
-            await ctx.send(f'Incorrect OWL subcommand passed.')
+            await ctx.reply(f'Incorrect OWL subcommand passed.')
         else:
             log.info(f"OWL event requested for: {ctx.invoked_subcommand}.")
     
@@ -109,7 +109,7 @@ class OWL(commands.Cog):
 
                 e.add_field(name=val, value=name, inline=False)
 
-            await ctx.send(embed=e)
+            await ctx.reply(embed=e)
     # @owl.command()
     # async def live(self, ctx):
     #     """Display stats of the live match."""

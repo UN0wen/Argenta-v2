@@ -78,19 +78,19 @@ class Warframe(commands.Cog):
     async def alerts(self, ctx):
         rsp = await self.get_json("alerts")
         e = AlertsEmbed(rsp)
-        await ctx.send(embed=e)
+        await ctx.reply(embed=e)
 
     @wf.command()
     async def fissures(self, ctx):
         rsp = await self.get_json("fissures")
         e = FissuresEmbed(rsp)
-        await ctx.send(embed=e)
+        await ctx.reply(embed=e)
 
     @wf.command()
     async def sorties(self, ctx):
         rsp = await self.get_json("sortie")
         e = SortieEmbed(rsp)
-        await ctx.send(embed=e)
+        await ctx.reply(embed=e)
 
     @wf.command()
     async def timers(self, ctx):
@@ -98,27 +98,27 @@ class Warframe(commands.Cog):
             earth = await self.get_json(self.timers[1])
             vallis = await self.get_json(self.timers[2])
             e = TimersEmbed(cetus, earth, vallis)
-            await ctx.send(embed=e)
+            await ctx.reply(embed=e)
 
     @wf.command()
     async def baro(self, ctx):
         rsp = await self.get_json("baro")
         e = BaroEmbed(rsp)
-        await ctx.send(embed=e)
+        await ctx.reply(embed=e)
 
     @wf.command()
     async def invasions(self, ctx):
         rsp = await self.get_json("invasions")
         e = InvasionsEmbed(rsp)
-        await ctx.send(embed=e)
+        await ctx.reply(embed=e)
 
     @wf.command()
     async def nightwave(self, ctx):
         rsp = await self.get_json("nightwave")
         e1 = NightwaveEmbed(rsp, daily=True)
         e2 = NightwaveEmbed(rsp, daily=False)
-        await ctx.send(embed=e1)
-        await ctx.send(embed=e2)
+        await ctx.reply(embed=e1)
+        await ctx.reply(embed=e2)
 
     @wf.command()
     async def synthesis(self, ctx, *, name):
@@ -126,7 +126,7 @@ class Warframe(commands.Cog):
             url = "https://api.warframestat.us/synthtargets"
             rsp = await self.fetch_json(session, url)
             e = SynthEmbed(rsp, name)
-            await ctx.send(embed=e)
+            await ctx.reply(embed=e)
 
     @wf.command()
     async def market(self, ctx, t, *, name):
@@ -135,7 +135,7 @@ class Warframe(commands.Cog):
         url_name = ""
 
         if t not in ['buy', 'b', 'sell', 's']:
-            await ctx.send('Invalid opt. Must be buy/sell.')
+            await ctx.reply('Invalid opt. Must be buy/sell.')
             return
 
         for x in self.market_data:
@@ -144,9 +144,9 @@ class Warframe(commands.Cog):
 
         if url_name:
             e = MarketEmbed(t, name, url_name)
-            await ctx.send(embed=e)
+            await ctx.reply(embed=e)
         else:
-            await ctx.send(f"{name} not found.")
+            await ctx.reply(f"{name} not found.")
 
 
 def setup(bot):

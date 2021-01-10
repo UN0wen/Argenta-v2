@@ -39,20 +39,20 @@ class General(commands.Cog):
             row = await ctx.db.fetchrow(query, str(ctx.author.id))
             if row:
                 if row['afk_message']:
-                    await ctx.send(f"""Your afk message is: {row['afk_message']}.""")
+                    await ctx.reply(f"""Your afk message is: {row['afk_message']}.""")
                 else:
-                    await ctx.send(f"You don't currently have an afk message.")
+                    await ctx.reply(f"You don't currently have an afk message.")
             else:
-                await ctx.send("You don't currently have an afk message.")
+                await ctx.reply("You don't currently have an afk message.")
         else:
             query = ("INSERT INTO users (user_id, afk_message) VALUES ($2, $1) " 
                      "ON CONFLICT (user_id) DO UPDATE SET afk_message = $1")
             if afk_msg == ".":
                 await ctx.db.execute(query, None, str(ctx.author.id))
-                await ctx.send("Welcome back.")
+                await ctx.reply("Welcome back.")
             else:
                 await ctx.db.execute(query, afk_msg, str(ctx.author.id))
-                await ctx.send("AFK message successfully updated.")
+                await ctx.reply("AFK message successfully updated.")
     
     @commands.command(hidden=True)
     @checks.is_mod()
@@ -60,7 +60,7 @@ class General(commands.Cog):
         query = ("INSERT INTO users (user_id, afk_message) VALUES ($2, $1) " 
                      "ON CONFLICT (user_id) DO UPDATE SET afk_message = $1")
         await ctx.db.execute(query, None, uid)
-        await ctx.send(f"AFK message of user {uid} deleted")
+        await ctx.reply(f"AFK message of user {uid} deleted")
 
     @afk.before_invoke
     async def create_connection(self, ctx):
@@ -100,9 +100,9 @@ class General(commands.Cog):
             self.mimic[ctx.author.id] = True
 
         if self.mimic[ctx.author.id]:
-            await ctx.send('Mimic enabled.')
+            await ctx.reply('Mimic enabled.')
         else:
-            await ctx.send('Mimic disabled.')
+            await ctx.reply('Mimic disabled.')
 
     
 
